@@ -80,7 +80,11 @@ const AHPTestComponent: FC<AHPTestComponentProps> = ({}) => {
 
             <Box display='flex' justifyContent='flex-start' alignItems='center'>
             <Typography> consistency ratio: {consistencyRatio}</Typography>
-            <Typography sx={{ml:1}}>{consistencyRatio < 0.1 ? <p> consistent </p> : <p> too consistent</p>}</Typography>
+                {consistencyRatio < 0.1 ? (
+                    <Typography> consistent </Typography>
+                ) : (
+                    <Typography> too consistent</Typography>)
+                }
             </Box>
         </Card>
     );

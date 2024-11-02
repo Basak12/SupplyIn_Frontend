@@ -9,12 +9,14 @@ const allRouteItems = [
  */
 
 const DashboardPage = lazy(() => import('../content/Pages/Dashboard'));
+const LoginPage = lazy(() => import('../content/Pages/Auth/LoginCover'));
 
 const AppRouter: React.FC = () => {
     return (
         <Router>
             <Suspense fallback={<div>Loading...</div>}>
                 <Routes>
+                    <Route path="/" element={<LoginPage />} />
                     <Route path="/dashboard" element={<DashboardPage />} />
                 </Routes>
             </Suspense>
