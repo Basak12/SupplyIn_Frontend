@@ -10,6 +10,8 @@ const LoginPage: FC<LoginPageProps> = ({}) => {
             m:2, p:2
         }}>
             <Typography>Login Page</Typography>
+
+            <Typography>test</Typography>
         </Card>
     );
 };
