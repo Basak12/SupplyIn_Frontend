@@ -1,5 +1,6 @@
 import React, { FC } from 'react';
 import {Card, Typography, Box} from "@mui/material";
+import useNavigation from "../../hooks/UseNavigation";
 
 interface AHPTestComponentProps {}
 
@@ -75,6 +76,8 @@ const AHPTestComponent: FC<AHPTestComponentProps> = ({}) => {
             {criteriaNames.map((name, index) => (
                 <Typography key={index}>{name} Weight: {weights[index].toPrecision(2)}</Typography>
             ))}
+
+
             <Box display='flex' justifyContent='flex-start' alignItems='center'>
             <Typography> consistency ratio: {consistencyRatio}</Typography>
             <Typography sx={{ml:1}}>{consistencyRatio < 0.1 ? <p> consistent </p> : <p> too consistent</p>}</Typography>

@@ -2,13 +2,17 @@ import React from 'react';
 import './App.css';
 import AHPTestComponent from "./content/ahp";
 import Grid from '@mui/material/Grid2';
-//unstable grid
+import { NavigationProvider } from './context/Navigation';
+import AppRouter from "./router";
+
 function App() {
-   //AHP test component below
 
   return (
       <Grid container justifyContent='center'>
-        <AHPTestComponent/>
+          <NavigationProvider>
+              <AHPTestComponent/>
+              <AppRouter/>
+          </NavigationProvider>
       </Grid>
   );
 }
