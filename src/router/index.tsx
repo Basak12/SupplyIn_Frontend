@@ -10,6 +10,7 @@ const allRouteItems = [
 
 const DashboardPage = lazy(() => import('../content/Pages/Dashboard'));
 const LoginPage = lazy(() => import('../content/Pages/Auth/LoginCover'));
+const ProfilePage = lazy(() => import('../content/Pages/Profile'));
 
 const AppRouter: React.FC = () => {
     return (
@@ -18,6 +19,7 @@ const AppRouter: React.FC = () => {
                 <Routes>
                     <Route path="/" element={<LoginPage />} />
                     <Route path="/dashboard" element={<DashboardPage />} />
+                    <Route path="/profile" element={<ProfilePage />} />
                 </Routes>
             </Suspense>
         </Router>
