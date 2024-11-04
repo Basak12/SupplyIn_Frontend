@@ -7,11 +7,11 @@ Software and versions required to run the project:
 
 ### Installation
 
-1. Clone this repository with https:
+1. Clone this repository with https or download as zip file:
    ```
    git clone //https://github.com/Basak12/SupplyIn_Frontend
    Viewer is already invited for this repository. 
-   username: metu.di.502.reviewer1@gmail.com 
+   username: metu.di.502.reviewer5@gmail.com
    ```
 
 2. Navigate into the project directory:
