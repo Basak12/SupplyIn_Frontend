@@ -10,11 +10,13 @@ const LoginPage: FC<LoginPageProps> = () => {
     const navigate = useNavigate();
 
     return (
-        <Box width='100%'>
+        <Box width='100%' sx={{
+            backgroundColor: '#F6F6F6',
+        }}>
             <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }} sx={{ height: '100vh'}}>
                 <Grid size={6} sx={{ backgroundColor: '#e3d3cf', display: 'flex', flexDirection: 'column', justifyContent: 'center', paddingLeft: '5vw' }}>
                     <Box sx={{ position: 'absolute', top: 50, left: 70 }}>
-                        <CardMedia component="img" height={50} image='/images/logo.png' alt="logo" sx={{ width: 250 }} />
+                        <CardMedia component="img" height={45} image='/images/logo.png' alt="logo" sx={{ width: 220 }} />
                     </Box>
                     <Typography variant="h1" sx={{ fontWeight: 'bold' }}>
                         Welcome <br /> to <br />Supply In

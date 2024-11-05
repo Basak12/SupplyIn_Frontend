@@ -18,7 +18,11 @@ const DashboardPage: FC<DashboardPageProps> = ({}) => {
 
 
     return (
-        <Grid container display='flex' justifyContent='center' alignItems='stretch' direction='row'>
+        <Grid container display='flex' justifyContent='center' alignItems='stretch' direction='row' sx={{
+            backgroundColor: '#f6f6f6',
+            height: '100vh',
+            width: '100vw',
+        }}>
             <Grid size={6}>
                 <Card sx={{
                     m:2, p:2
