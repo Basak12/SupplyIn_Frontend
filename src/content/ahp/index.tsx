@@ -3,9 +3,9 @@ import { Card, Typography, Box, Table, TableBody, TableCell, TableContainer, Tab
 
 interface AHPTestComponentProps {}
 
-const AHPTestComponent: FC<AHPTestComponentProps> = ({}) => {
+type Matrix = number[][];
 
-    type Matrix = number[][];
+const AHPTestComponent: FC<AHPTestComponentProps> = ({}) => {
 
     const comparisonMatrix: Matrix = [
         [1, 5, 3, 7, 9], // Price
@@ -14,6 +14,15 @@ const AHPTestComponent: FC<AHPTestComponentProps> = ({}) => {
         [1 / 7, 1 / 3, 1 / 5, 1, 3], // Reliability
         [1 / 9, 1 / 5, 1 / 7, 1 / 3, 1], // Safety Regulation Compliance
     ];
+
+    const inconsistentComparisonMatrix: Matrix = [
+        [1, 5, 9, 7, 5], // Price
+        [1 / 5, 1, 3, 3, 5], // Delivery Time
+        [1 / 9, 1/3, 1, 5, 3], // Warranty
+        [1 / 7, 1 / 3, 1 / 5, 1, 3], // Reliability
+        [1 / 5, 1 / 5, 1 / 3, 1 / 3, 1], // Safety Regulation Compliance
+    ];
+
 
     const criteriaNames = ["Price", "Delivery Time", "Warranty", "Reliability", "Safety Regulations Compliance"];
 
@@ -53,10 +62,10 @@ const AHPTestComponent: FC<AHPTestComponentProps> = ({}) => {
         return consistencyRatio;
     }
 
-    const columnSums = calculateColumnSums(comparisonMatrix);
-    const normalizedMatrix = normalizeMatrix(comparisonMatrix, columnSums);
+    const columnSums = calculateColumnSums(inconsistentComparisonMatrix);
+    const normalizedMatrix = normalizeMatrix(inconsistentComparisonMatrix, columnSums);
     const weights = calculateWeights(normalizedMatrix);
-    const consistencyRatio = calculateConsistencyRatio(comparisonMatrix, weights);
+    const consistencyRatio = calculateConsistencyRatio(inconsistentComparisonMatrix, weights);
 
     return (
         <Card sx={{ m: 2, p: 2 }}>
@@ -88,7 +97,7 @@ const AHPTestComponent: FC<AHPTestComponentProps> = ({}) => {
                                 </>
                             ) : (
                                 <>
-                                <TableCell component="th" scope="row" sx={{backgroundColor:'#ff8f8f'}}> Not Consistent</TableCell>
+                                <TableCell component="th" scope="row" sx={{backgroundColor:'#ff8f8f'}}> Inconsistent</TableCell>
                                 <TableCell align="right" sx={{backgroundColor:'#ff8f8f'}}>{consistencyRatio.toFixed(4)}</TableCell>
                                 </>
                             )}

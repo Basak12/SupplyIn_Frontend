@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Card, Typography, Box, TextField, Button, Paper } from "@mui/material";
+import {Card, Typography, Box, TextField, Button, Paper, CardMedia} from "@mui/material";
 import { styled } from '@mui/material/styles';
 import { useNavigate } from "react-router-dom";
 import Grid from "@mui/material/Grid2";
@@ -13,7 +13,10 @@ const LoginPage: FC<LoginPageProps> = () => {
         <Box width='100%'>
             <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }} sx={{ height: '100vh'}}>
                 <Grid size={6} sx={{ backgroundColor: '#e3d3cf', display: 'flex', flexDirection: 'column', justifyContent: 'center', paddingLeft: '5vw' }}>
-                    <Typography variant="h1" component="h1" sx={{ fontWeight: 'bold' }}>
+                    <Box sx={{ position: 'absolute', top: 50, left: 70 }}>
+                        <CardMedia component="img" height={50} image='/images/logo.png' alt="logo" sx={{ width: 250 }} />
+                    </Box>
+                    <Typography variant="h1" sx={{ fontWeight: 'bold' }}>
                         Welcome <br /> to <br />Supply In
                     </Typography>
                     <Typography variant="h6" sx={{ mt: 2, color: '#333' }}>
