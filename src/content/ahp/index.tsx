@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import {Card, Typography, Box} from "@mui/material";
+import { Card, Typography, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from "@mui/material";
 
 interface AHPTestComponentProps {}
 
@@ -17,28 +17,28 @@ const AHPTestComponent: FC<AHPTestComponentProps> = ({}) => {
 
     const criteriaNames = ["Price", "Delivery Time", "Warranty", "Reliability", "Safety Regulations Compliance"];
 
-//normalize criteria
+    // Normalize criteria
     function calculateColumnSums(matrix: Matrix): number[] {
         return matrix[0].map((_, colIndex) =>
             matrix.reduce((sum, row) => sum + row[colIndex], 0)
         );
     }
 
-// normalize matrix
+    // Normalize matrix
     function normalizeMatrix(matrix: Matrix, columnSums: number[]): Matrix {
         return matrix.map(row =>
             row.map((value, colIndex) => value / columnSums[colIndex])
         );
     }
 
-// calculate weight matrix
+    // Calculate weight matrix
     function calculateWeights(normalizedMatrix: Matrix): number[] {
         return normalizedMatrix.map(row =>
             row.reduce((sum, value) => sum + value, 0) / row.length
         );
     }
 
-    //consistency ratio
+    // Consistency ratio
     function calculateConsistencyRatio(matrix: Matrix, weights: number[]): number {
         const n = matrix.length;
         const lambdaMax = matrix.reduce(
@@ -48,7 +48,7 @@ const AHPTestComponent: FC<AHPTestComponentProps> = ({}) => {
         ) / n;
 
         const consistencyIndex = (lambdaMax - n) / (n - 1);
-        const randomIndex = [0.00, 0.00, 0.58, 0.90, 1.12, 1.24]; //random index
+        const randomIndex = [0.00, 0.00, 0.58, 0.90, 1.12, 1.24]; // Random index
         const consistencyRatio = consistencyIndex / randomIndex[n];
         return consistencyRatio;
     }
@@ -58,30 +58,44 @@ const AHPTestComponent: FC<AHPTestComponentProps> = ({}) => {
     const weights = calculateWeights(normalizedMatrix);
     const consistencyRatio = calculateConsistencyRatio(comparisonMatrix, weights);
 
-    console.log("consistency ratio:", consistencyRatio);
-    console.table(comparisonMatrix);
-
-    if (consistencyRatio < 0.1) {
-        console.log("Consistent");
-    } else {
-        console.log("Too consistent");
-    }
-
     return (
-        <Card sx={{
-            m:2, p:2
-        }}>
-            {criteriaNames.map((name, index) => (
-                <Typography key={index}>{name} Weight: {weights[index].toPrecision(2)}</Typography>
-            ))}
-            <Box display='flex' justifyContent='flex-start' alignItems='center'>
-            <Typography> consistency ratio: {consistencyRatio}</Typography>
-                {consistencyRatio < 0.1 ? (
-                    <Typography> consistent </Typography>
-                ) : (
-                    <Typography> too consistent</Typography>)
-                }
-            </Box>
+        <Card sx={{ m: 2, p: 2 }}>
+            <TableContainer component={Paper}>
+                <Typography variant="h6" align="center" sx={{ pt: 2 }}>
+                    Criteria Weights
+                </Typography>
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>Criterion</TableCell>
+                            <TableCell align="right">Weight</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {criteriaNames.map((name, index) => (
+                            <TableRow key={index}>
+                                <TableCell component="th" scope="row">
+                                    {name}
+                                </TableCell>
+                                <TableCell align="right">{weights[index].toPrecision(2)}</TableCell>
+                            </TableRow>
+                        ))}
+                        <TableRow>
+                            {consistencyRatio < 0.1 ? (
+                                <>
+                                <TableCell component="th" scope="row" sx={{backgroundColor:'#bfffb3'}}> Consistent</TableCell>
+                                <TableCell align="right" sx={{backgroundColor:'#bfffb3'}}>{consistencyRatio.toFixed(4)}</TableCell>
+                                </>
+                            ) : (
+                                <>
+                                <TableCell component="th" scope="row" sx={{backgroundColor:'#ff8f8f'}}> Not Consistent</TableCell>
+                                <TableCell align="right" sx={{backgroundColor:'#ff8f8f'}}>{consistencyRatio.toFixed(4)}</TableCell>
+                                </>
+                            )}
+                        </TableRow>
+                    </TableBody>
+                </Table>
+            </TableContainer>
         </Card>
     );
 };
