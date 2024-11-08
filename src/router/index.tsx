@@ -11,6 +11,7 @@ const allRouteItems = [
 const DashboardPage = lazy(() => import('../content/Pages/Dashboard'));
 const LoginPage = lazy(() => import('../content/Pages/Auth/LoginCover'));
 const ProfilePage = lazy(() => import('../content/Pages/Profile'));
+const UserPage = lazy(() => import('../content/Pages/User'));
 
 const AppRouter: React.FC = () => {
     // create user auth context. If user is not authenticated, redirect to login page like JWT ? content : LoginPage
@@ -22,6 +23,7 @@ const AppRouter: React.FC = () => {
                     <Route path="/" element={<LoginPage />} />
                     <Route path="/dashboard" element={<DashboardPage />} />
                     <Route path="/profile" element={<ProfilePage />} />
+                    <Route path="/user" element={<UserPage />} />
                 </Routes>
             </Suspense>
         </Router>
