@@ -13,6 +13,8 @@ const LoginPage = lazy(() => import('../content/Pages/Auth/LoginCover'));
 const ProfilePage = lazy(() => import('../content/Pages/Profile'));
 
 const AppRouter: React.FC = () => {
+    // create user auth context. If user is not authenticated, redirect to login page like JWT ? content : LoginPage
+
     return (
         <Router>
             <Suspense fallback={<div>Loading...</div>}>

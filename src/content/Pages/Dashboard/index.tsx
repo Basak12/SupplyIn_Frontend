@@ -8,7 +8,7 @@ interface DashboardPageProps {}
 const DashboardPage: FC<DashboardPageProps> = ({}) => {
 
     const criteria = ["Price", "Delivery Time", "Warranty", "Reliability", "Safety Regulation Compliance"];
-    const data = [
+    const comparisonMatrix = [
         [1, 5, 3, 7, 9],
         [1 / 5, 1, 1 / 3, 3, 5],
         [1 / 3, 3, 1, 5, 7],
@@ -16,6 +16,14 @@ const DashboardPage: FC<DashboardPageProps> = ({}) => {
         [1 / 9, 1 / 5, 1 / 7, 1 / 3, 1]
     ];
 
+    const inconsistentComparisonMatrix = [
+        [1, 5, 9, 7, 5], // Price
+        [1 / 5, 1, 3, 3, 5], // Delivery Time
+        [1 / 9, 1/3, 1, 5, 3], // Warranty
+        [1 / 7, 1 / 3, 1 / 5, 1, 3], // Reliability
+        [1 / 5, 1 / 5, 1 / 3, 1 / 3, 1], // Safety Regulation Compliance
+
+    ];
 
     return (
         <Grid container display='flex' justifyContent='center' alignItems='stretch' direction='row' sx={{
@@ -41,7 +49,7 @@ const DashboardPage: FC<DashboardPageProps> = ({}) => {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {data.map((row, rowIndex) => (
+                                    {inconsistentComparisonMatrix.map((row, rowIndex) => (
                                         <TableRow key={rowIndex}>
                                             <TableCell>{criteria[rowIndex]}</TableCell>
                                             {row.map((value, colIndex) => (
