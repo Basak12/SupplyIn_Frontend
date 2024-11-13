@@ -25,6 +25,7 @@ const DashboardPage: FC<DashboardPageProps> = ({}) => {
         [1 / 5, 1 / 5, 1 / 3, 1 / 3, 1], // Safety Regulation Compliance
 
     ];
+    const asd = 'test';
 
     return (
         <Grid container display='flex' justifyContent='center' alignItems='stretch' direction='row' sx={{
