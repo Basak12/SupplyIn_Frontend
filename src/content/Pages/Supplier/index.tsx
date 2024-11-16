@@ -9,7 +9,7 @@ const SupplierPage: FC<SupplierPageProps> = ({}) => {
         <Card sx={{
             m:2, p:2
         }}>
-            <Typography>Product Page</Typography>
+            <Typography>Supplier Page</Typography>
         </Card>
     );
 };
