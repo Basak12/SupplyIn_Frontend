@@ -1,12 +1,16 @@
 import React, { FC, useEffect, useState } from 'react';
-import {Card, Typography, Box, TableContainer, Paper, Table, TableHead, TableCell, TableRow, TableBody} from "@mui/material";
+import {Card, Typography, Box, TableContainer, Paper, Table, TableHead, TableCell, TableRow, TableBody, Fab} from "@mui/material";
 import AHPTestComponent from "../../ahp";
 import Grid from "@mui/material/Grid2";
-import { getUsers } from '../../../api/getUsers';
+import AddIcon from '@mui/icons-material/Add';
+import AHPPairwiseComparisonModal from "./components/AHPPairwiseComparisonDialog";
+
 
 interface DashboardPageProps {}
 
 const DashboardPage: FC<DashboardPageProps> = ({}) => {
+
+    const [open, setOpen] = useState<boolean>(false);
 
     const criteria = ["Price", "Delivery Time", "Warranty", "Reliability", "Safety Regulation Compliance"];
     const comparisonMatrix = [
@@ -26,12 +30,42 @@ const DashboardPage: FC<DashboardPageProps> = ({}) => {
 
     ];
 
+    const handleOpen = () => {
+        setOpen(true)
+    }
+
+
+
     return (
-        <Grid container display='flex' justifyContent='center' alignItems='stretch' direction='row' sx={{
+        <>
+            <Grid size={12}>
+            <Box display='flex' justifyContent='flex-end' m={1}>
+                <Fab color="secondary" aria-label="add" onClick={handleOpen}>
+                    <AddIcon />
+                </Fab>
+            </Box>
+        </Grid>
+            {open && <AHPPairwiseComparisonModal open={open} setOpen={setOpen}/>}
+
+        </>
+    );
+};
+
+export default DashboardPage;
+
+/*
+<Grid container display='flex' justifyContent='center' alignItems='stretch' direction='row' sx={{
             backgroundColor: '#f6f6f6',
             height: '100vh',
             width: '100vw',
         }}>
+            <Grid size={12}>
+                <Box display='flex' justifyContent='flex-end' m={1}>
+                <Fab color="secondary" aria-label="add" onClick={handleOpen}>
+                    <AddIcon />
+                </Fab>
+                </Box>
+            </Grid>
             <Grid size={6}>
                 <Card sx={{
                     m:2, p:2
@@ -50,7 +84,7 @@ const DashboardPage: FC<DashboardPageProps> = ({}) => {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {inconsistentComparisonMatrix.map((row, rowIndex) => (
+                                    {comparisonMatrix.map((row, rowIndex) => (
                                         <TableRow key={rowIndex}>
                                             <TableCell>{criteria[rowIndex]}</TableCell>
                                             {row.map((value, colIndex) => (
@@ -70,7 +104,4 @@ const DashboardPage: FC<DashboardPageProps> = ({}) => {
                 <AHPTestComponent/>
             </Grid>
         </Grid>
-    );
-};
-
-export default DashboardPage;
+ */

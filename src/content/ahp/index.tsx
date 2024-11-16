@@ -62,10 +62,10 @@ const AHPTestComponent: FC<AHPTestComponentProps> = ({}) => {
         return consistencyRatio;
     }
 
-    const columnSums = calculateColumnSums(inconsistentComparisonMatrix);
-    const normalizedMatrix = normalizeMatrix(inconsistentComparisonMatrix, columnSums);
+    const columnSums = calculateColumnSums(comparisonMatrix);
+    const normalizedMatrix = normalizeMatrix(comparisonMatrix, columnSums);
     const weights = calculateWeights(normalizedMatrix);
-    const consistencyRatio = calculateConsistencyRatio(inconsistentComparisonMatrix, weights);
+    const consistencyRatio = calculateConsistencyRatio(comparisonMatrix, weights);
 
     return (
         <Card sx={{ m: 2, p: 2 }}>

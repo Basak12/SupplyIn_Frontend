@@ -37,7 +37,7 @@ const UserPage: FC<UserPageProps> = ({}) => {
                 {users.map((user: any, index: number) => (
                     <Box key={index} sx={{ p: 1 }}>
                         <Typography variant="body1">
-                            {user.name}
+                            {user.name}, {user.surname}, {user.email}
                         </Typography>
                     </Box>
                 ))}
