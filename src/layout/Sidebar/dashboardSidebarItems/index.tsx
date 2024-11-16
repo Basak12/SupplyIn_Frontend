@@ -1,10 +1,11 @@
-import DashboardIcon from '@mui/icons-material/Dashboard';
+import DashboardIcon from "@mui/icons-material/Dashboard";
 
 const dashboardSidebarItems = [
     {
-        label: 'Dashboard',
-        path: '/dashboard',
-        icon: DashboardIcon
-    }
-]
+        label: "Dashboard",
+        path: "/dashboard",
+        icon: DashboardIcon,
+    },
+];
+
 export default dashboardSidebarItems;

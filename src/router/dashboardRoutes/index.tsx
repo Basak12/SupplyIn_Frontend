@@ -5,9 +5,8 @@ const DashboardPage = lazy(() => import('../../content/Pages/Dashboard'));
 const dashboardRouteItems = [
     {
         path: '/dashboard',
-        element: <DashboardPage />
+        element: <DashboardPage />,
     },
-]
-
+];
 
 export default dashboardRouteItems;

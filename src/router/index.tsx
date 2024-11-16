@@ -1,32 +1,40 @@
-import React, {lazy, Suspense} from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import dashboardRouteItems from './dashboardRoutes';
+import React, { lazy, Suspense } from "react";
+import { Routes, Route, useLocation } from "react-router-dom";
+import Header from "../components/Header";
+import allRouteItems from "./routeItems";
 
-/*
-const allRouteItems = [
-    dashboardRouteItems,
-]
- */
-
-const DashboardPage = lazy(() => import('../content/Pages/Dashboard'));
 const LoginPage = lazy(() => import('../content/Pages/Auth/LoginCover'));
-const ProfilePage = lazy(() => import('../content/Pages/Profile'));
-const UserPage = lazy(() => import('../content/Pages/User'));
 
 const AppRouter: React.FC = () => {
-    // create user auth context. If user is not authenticated, redirect to login page like JWT ? content : LoginPage
+    const { pathname } = useLocation();
+
+    const pathnameConverter = (pathname: string) => {
+        switch (pathname) {
+            case '/dashboard':
+                return 'Dashboard';
+            case '/profile':
+                return 'Profile';
+            case '/user':
+                return 'User';
+            case '/products':
+                return 'Products';
+            default:
+                return 'Login';
+        }
+    };
+
+    const routeElements = Object.values(allRouteItems).flat().map((route) => (
+        <Route key={route.path} path={route.path} element={route.element} />
+    ));
 
     return (
-        <Router>
-            <Suspense fallback={<div>Loading...</div>}>
-                <Routes>
-                    <Route path="/" element={<LoginPage />} />
-                    <Route path="/dashboard" element={<DashboardPage />} />
-                    <Route path="/profile" element={<ProfilePage />} />
-                    <Route path="/user" element={<UserPage />} />
-                </Routes>
-            </Suspense>
-        </Router>
+        <>
+            {pathname === '/' ? null : <Header pageName={pathnameConverter(pathname)} />}
+            <Routes>
+                <Route path="/" element={<LoginPage />} />
+                {routeElements}
+            </Routes>
+        </>
     );
 };
 

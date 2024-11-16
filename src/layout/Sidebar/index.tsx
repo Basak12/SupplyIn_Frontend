@@ -1,69 +1,53 @@
-import {List, ListItem, ListItemText} from "@mui/material";
-import { FC } from "react";
-import dashboardSidebarItems from "./dashboardSidebarItems";
-import DashboardIcon from '@mui/icons-material/Dashboard';
+import React from "react";
+import { Box, List, ListItem, ListItemText, ListItemIcon } from "@mui/material";
+import { Link, useLocation } from "react-router-dom";
+import sidebarItems from "./sidebarItems";
 
-
-interface SidebarItemsProps {
-}
-
-const SidebarItems: FC<SidebarItemsProps> = ({}) => {
-
-
-
-    console.log('dashboardSidebarItems', dashboardSidebarItems);
+const Sidebar: React.FC = () => {
+    const location = useLocation();
 
     return (
-        <List>
-            <ListItem>
-                <DashboardIcon />
-                <ListItemText primary="Dashboard" />
-            </ListItem>
-        </List>
+        <Box
+            sx={{
+                backgroundColor: "#16223b",
+                width: 220,
+                height: "100vh",
+                color: "#cacbcc",
+                display: "flex",
+                flexDirection: "column",
+                px:2,
+            }}
+        >
+            <img
+                src="/images/logo.png"
+                alt="Brand Logo"
+            />
+            <List>
+                {Object.entries(sidebarItems).map(([section, items]) =>
+                    items.map((item) => (
+                        <ListItem
+                            key={item.label}
+                            component={Link}
+                            to={item.path}
+                            sx={{
+                                color: location.pathname === item.path ? "#b4c2b4" : "white",
+                                backgroundColor: location.pathname === item.path ? "#333f58" : "transparent",
+                                borderRadius: 2,
+                                marginBottom: 1,
+                                textDecoration: "none",
+                                "&:hover": {
+                                    backgroundColor: "#333f58",
+                                },
+                            }}
+                        >
+                            <ListItemIcon sx={{ color: "inherit" }}>{<item.icon />}</ListItemIcon>
+                            <ListItemText primary={item.label} />
+                        </ListItem>
+                    ))
+                )}
+            </List>
+        </Box>
     );
-}
-
-export default SidebarItems;
-
-/*
-const renderedLinks = links.map((link) =>{
-    return <Link key={link.label} to = {link.path} activeClassName = 'font-bold border-l-4 border-white-500 pl-2 py-3'>
-      <Box style = {{
-        display: 'flex',
-        alignItems: 'center',
-      }}>
-        {link.label === 'Dashboard' ? <DashboardIcon/> : null}
-        {link.label === 'Sınıflar' ? <ClassIcon/> : null}
-        {link.label === 'Ödevler' ? <TaskIcon/> : null}
-        {link.label === 'Sınavlar' ? <ArticleIcon/> : null}
-        {link.label === 'Notlar' ? <GradingIcon/> : null}
-        {link.label === 'Ayarlar' ? <SettingsIcon/> : null}
-        {link.label === 'Kayıt Oluştur' ? <AppRegistrationIcon/> : null}
-        {link.label}
-      </Box>
-
-    </Link>
-  })
-
-
-
-  return (
-    <>
-      <Box display = 'flex'flexDirection = 'column' alignItems = 'stretch' style = {{
-        backgroundColor: '#11192a',
-        width: '200px',
-        height: '100%',
-        color: 'white',
-        paddingTop: '20px',
-        paddingLeft: '20px',
-        fontSize: '20px',
-        fontWeight: 'bold',
-      }}
-      >
-          <img src="/images/logo.png" alt="brand logo" style={{ width: "120px", height: "120px"}}/>
-          {renderedLinks}
-      </Box>
-    </>
-  );
 };
- */
+
+export default Sidebar;

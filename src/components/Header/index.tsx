@@ -19,24 +19,28 @@ const Header: FC<HeaderProps> = ({pageName}) => {
 
     return(
         <>
-            <Box style = {{
-                width: "100%",
-                backgroundColor: '#11192a',
-                height: "60px",
+            <Box sx = {{
+                backgroundColor: '#36373a',
+                height: 40,
+                padding: 2,
             }}>
-                <Box display = 'flex' justifyContent='space-between' p = "10px" >
-                    <Box display = "flex" ml = {20} alignItems='center'>
-                        <Typography color="white" variant = 'h5'>{pageName}</Typography>
+                <Box display='flex' justifyContent='space-between' alignItems='center'>
+                    <Box display="flex" alignItems='center'>
+                        <Typography color="white" variant='h5'>{pageName}</Typography>
                     </Box>
                     <Box display = "flex">
-                        <Typography color = "white" variant = "h6" mx = "10px">{date.toLocaleDateString()}</Typography>
-                        <Typography color = "white" variant = "h6">{date.toLocaleTimeString([], {hour12: false})}</Typography>
+                        <Typography color="white" variant="h6">{date.toLocaleDateString()}</Typography>
+                        <Typography color="white" variant="h6">{date.toLocaleTimeString([], {hour12: false})}</Typography>
                     </Box>
-
                 </Box>
+
             </Box>
         </>
     )
 }
 
 export default Header;
+
+/*
+
+ */

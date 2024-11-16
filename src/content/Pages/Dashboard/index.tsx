@@ -4,11 +4,13 @@ import AHPTestComponent from "../../ahp";
 import Grid from "@mui/material/Grid2";
 import AddIcon from '@mui/icons-material/Add';
 import AHPPairwiseComparisonModal from "./components/AHPPairwiseComparisonDialog";
+import {useLocation} from "react-router-dom";
 
 
 interface DashboardPageProps {}
 
 const DashboardPage: FC<DashboardPageProps> = ({}) => {
+    const { pathname } = useLocation();
 
     const [open, setOpen] = useState<boolean>(false);
 
@@ -34,7 +36,7 @@ const DashboardPage: FC<DashboardPageProps> = ({}) => {
         setOpen(true)
     }
 
-
+console.log('pathname', pathname);
 
     return (
         <>
