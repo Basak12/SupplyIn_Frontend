@@ -20,6 +20,8 @@ const AppRouter: React.FC = () => {
                 return 'Products';
             case '/supplier':
                 return 'Supplier';
+            case '/purchase':
+                return 'Purchase';
             default:
                 return 'Unknown Page';
         }

@@ -1,10 +1,10 @@
-import DashboardIcon from "@mui/icons-material/Dashboard";
+import StoreIcon from '@mui/icons-material/Store';
 
 const supplierSidebarItems = [
     {
-        label: "Supplier",
+        label: "Suppliers",
         path: "/supplier",
-        icon: DashboardIcon,
+        icon: StoreIcon,
     },
 ];
 
