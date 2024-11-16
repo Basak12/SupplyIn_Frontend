@@ -40,38 +40,20 @@ console.log('pathname', pathname);
 
     return (
         <>
-            <Grid size={12}>
-            <Box display='flex' justifyContent='flex-end' m={1}>
-                <Fab color="secondary" aria-label="add" onClick={handleOpen}>
-                    <AddIcon />
-                </Fab>
-            </Box>
-        </Grid>
-            {open && <AHPPairwiseComparisonModal open={open} setOpen={setOpen}/>}
-
-        </>
-    );
-};
-
-export default DashboardPage;
-
-/*
-<Grid container display='flex' justifyContent='center' alignItems='stretch' direction='row' sx={{
-            backgroundColor: '#f6f6f6',
-            height: '100vh',
-            width: '100vw',
-        }}>
-            <Grid size={12}>
-                <Box display='flex' justifyContent='flex-end' m={1}>
-                <Fab color="secondary" aria-label="add" onClick={handleOpen}>
-                    <AddIcon />
-                </Fab>
-                </Box>
-            </Grid>
-            <Grid size={6}>
-                <Card sx={{
-                    m:2, p:2
-                }}>
+            <Grid container display='flex' justifyContent='center' alignItems='stretch' direction='row' sx={{
+                backgroundColor: '#f6f6f6',
+            }}>
+                <Grid size={12}>
+                    <Box display='flex' justifyContent='flex-end' m={1}>
+                        <Fab color="secondary" aria-label="add" onClick={handleOpen}>
+                            <AddIcon />
+                        </Fab>
+                    </Box>
+                </Grid>
+                <Grid size={6}>
+                    <Card sx={{
+                        m:2, p:2
+                    }}>
                         <TableContainer component={Paper}>
                             <Typography variant="h6" align="center" sx={{ pt: 2 }}>
                                 Criteria Comparison Matrix
@@ -99,11 +81,20 @@ export default DashboardPage;
                                 </TableBody>
                             </Table>
                         </TableContainer>
-                    <br/>
-                </Card>
+                        <br/>
+                    </Card>
+                </Grid>
+                <Grid size={6}>
+                    <AHPTestComponent/>
+                </Grid>
             </Grid>
-            <Grid size={6}>
-                <AHPTestComponent/>
-            </Grid>
-        </Grid>
+            {open && <AHPPairwiseComparisonModal open={open} setOpen={setOpen}/>}
+        </>
+    );
+};
+
+export default DashboardPage;
+
+/*
+
  */

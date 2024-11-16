@@ -7,6 +7,7 @@ import {
     Button,
     Slider,
     Typography,
+    Box, Divider,
 } from "@mui/material";
 import Grid from "@mui/material/Grid2"
 
@@ -61,34 +62,35 @@ const AHPPairwiseComparisonDialog: FC<AHPPairwiseComparisonDialogProps> = ({ ope
                 <Typography variant="body2" sx={{ mt: 2, color: "text.secondary" }}>
                     Value Legend:
                     <br />
-                    <strong>1:</strong> Equal Importance 
+                    <strong>1:</strong> Equal Importance
                     <br />
-                    <strong>3:</strong> Moderate Importance 
+                    <strong>3:</strong> Moderate Importance
                     <br />
                     <strong>5:</strong> Strong Importance
                     <br />
-                    <strong>7:</strong> Very Strong Importance 
+                    <strong>7:</strong> Very Strong Importance
                     <br />
                     <strong>9:</strong> Extreme Importance
                 </Typography>
             </DialogTitle>
-            <DialogContent
-                sx={{
-                    overflow: "visible",
-                    padding: 4,
-                }}
-            >
-                <Grid container spacing={3} alignItems="center">
+            <Divider/>
+            <DialogContent>
+                <Grid alignItems="stretch" >
                     {Object.entries(sliderValues).map(([key, value]) => {
                         const [first, second] = key.split("-");
                         return (
-                            <Grid container key={key} spacing={2} alignItems="center">
-                                <Grid size={3} sx={{ textAlign: "right" }}>
-                                    <Typography noWrap>
-                                        {first}
-                                    </Typography>
+                            <Grid container key={key} spacing={0} my={0.5}>
+                                <Grid size={12} mb={-1}>
+                                    <Box display='flex' justifyContent='space-between'>
+                                        <Typography>
+                                            {first}
+                                        </Typography>
+                                        <Typography>
+                                            {second}
+                                        </Typography>
+                                    </Box>
                                 </Grid>
-                                <Grid size={6}>
+                                <Grid size={12}>
                                     <Slider
                                         onChange={handleSliderChange(key)}
                                         value={value}
@@ -96,21 +98,16 @@ const AHPPairwiseComparisonDialog: FC<AHPPairwiseComparisonDialogProps> = ({ ope
                                         marks
                                         min={1}
                                         max={9}
-                                        valueLabelDisplay="auto"  // Show value above the slider
-                                        valueLabelFormat={(value) => `${value}`}  // Display the current value
+                                        valueLabelDisplay="auto"
+                                        valueLabelFormat={(value) => `${value}`}
                                     />
-                                </Grid>
-                                <Grid size={3} sx={{ textAlign: "left" }}>
-                                    <Typography noWrap>
-                                        {second}
-                                    </Typography>
                                 </Grid>
                             </Grid>
                         );
                     })}
                 </Grid>
             </DialogContent>
-            <DialogActions>
+            <DialogActions sx= {{mt:-1}}>
                 <Button onClick={handleClose}>Disagree</Button>
                 <Button onClick={handleClose}>Agree</Button>
             </DialogActions>
