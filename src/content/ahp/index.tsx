@@ -1,28 +1,14 @@
 import React, { FC } from 'react';
 import { Card, Typography, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from "@mui/material";
+import LoadingWrapper from '../../components/LoadingWrapper';
 
-interface AHPTestComponentProps {}
 
 type Matrix = number[][];
+interface AHPTestComponentProps {
+    comparisonMatrix: Matrix | null;
+}
 
-const AHPTestComponent: FC<AHPTestComponentProps> = ({}) => {
-
-    const comparisonMatrix: Matrix = [
-        [1, 5, 3, 7, 9], // Price
-        [1 / 5, 1, 1 / 3, 3, 5], // Delivery Time
-        [1 / 3, 3, 1, 5, 7], // Warranty
-        [1 / 7, 1 / 3, 1 / 5, 1, 3], // Reliability
-        [1 / 9, 1 / 5, 1 / 7, 1 / 3, 1], // Safety Regulation Compliance
-    ];
-
-    const inconsistentComparisonMatrix: Matrix = [
-        [1, 5, 9, 7, 5], // Price
-        [1 / 5, 1, 3, 3, 5], // Delivery Time
-        [1 / 9, 1/3, 1, 5, 3], // Warranty
-        [1 / 7, 1 / 3, 1 / 5, 1, 3], // Reliability
-        [1 / 5, 1 / 5, 1 / 3, 1 / 3, 1], // Safety Regulation Compliance
-    ];
-
+const AHPTestComponent: FC<AHPTestComponentProps> = ({comparisonMatrix}) => {
 
     const criteriaNames = ["Price", "Delivery Time", "Warranty", "Reliability", "Safety Regulations Compliance"];
 
@@ -62,50 +48,37 @@ const AHPTestComponent: FC<AHPTestComponentProps> = ({}) => {
         return consistencyRatio;
     }
 
+    if(!comparisonMatrix) {
+        return <p>Loading..</p>
+    }
+
     const columnSums = calculateColumnSums(comparisonMatrix);
     const normalizedMatrix = normalizeMatrix(comparisonMatrix, columnSums);
     const weights = calculateWeights(normalizedMatrix);
     const consistencyRatio = calculateConsistencyRatio(comparisonMatrix, weights);
 
     return (
-        <Card sx={{ m: 2, p: 2 }}>
-            <TableContainer component={Paper}>
-                <Typography variant="h6" align="center" sx={{ pt: 2 }}>
-                    Criteria Weights
-                </Typography>
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>Criterion</TableCell>
-                            <TableCell align="right">Weight</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {criteriaNames.map((name, index) => (
-                            <TableRow key={index}>
-                                <TableCell component="th" scope="row">
-                                    {name}
-                                </TableCell>
-                                <TableCell align="right">{weights[index].toPrecision(2)}</TableCell>
-                            </TableRow>
-                        ))}
-                        <TableRow>
-                            {consistencyRatio < 0.1 ? (
-                                <>
-                                <TableCell component="th" scope="row" sx={{backgroundColor:'#bfffb3'}}> Consistent</TableCell>
-                                <TableCell align="right" sx={{backgroundColor:'#bfffb3'}}>{consistencyRatio.toFixed(4)}</TableCell>
-                                </>
-                            ) : (
-                                <>
-                                <TableCell component="th" scope="row" sx={{backgroundColor:'#ff8f8f'}}> Inconsistent</TableCell>
-                                <TableCell align="right" sx={{backgroundColor:'#ff8f8f'}}>{consistencyRatio.toFixed(4)}</TableCell>
-                                </>
-                            )}
-                        </TableRow>
-                    </TableBody>
-                </Table>
-            </TableContainer>
-        </Card>
+        <>
+            {consistencyRatio > 0.1 &&  (
+                <Box sx={{
+                    backgroundColor: '#ff8f8f',
+                    p:2
+                }}>
+                    <Typography variant="subtitle1" textAlign='center'>
+                            Your matrix is inconsistent. Please review your comparisons.
+                        </Typography>
+                </Box>
+            )}
+            {consistencyRatio < 0.1 && (
+                <LoadingWrapper
+                    message="Calculating..."
+                    size={50}
+                    autoHideDelay={5000} // Hides after 5 seconds
+                    onHide={() => console.log('Loading finished!')}
+                />
+
+            )}
+        </>
     );
 };
 

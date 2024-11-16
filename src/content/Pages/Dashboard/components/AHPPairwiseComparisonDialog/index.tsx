@@ -10,13 +10,16 @@ import {
     Box, Divider,
 } from "@mui/material";
 import Grid from "@mui/material/Grid2"
+import AHPTestComponent from '../../../../ahp';
 
 interface AHPPairwiseComparisonDialogProps {
     open: boolean;
     setOpen: (open: boolean) => void;
+    comparisonMatrix: number[][] | null;
+    setComparisonMatrix: (matrix: number[][]) => void;
 }
 
-const AHPPairwiseComparisonDialog: FC<AHPPairwiseComparisonDialogProps> = ({ open, setOpen }) => {
+const AHPPairwiseComparisonDialog: FC<AHPPairwiseComparisonDialogProps> = ({ open, setOpen, comparisonMatrix, setComparisonMatrix }) => {
     const [sliderValues, setSliderValues] = useState<Record<string, number>>({
         "Price-Delivery Time": 3,
         "Price-Warranty": 3,
@@ -30,6 +33,8 @@ const AHPPairwiseComparisonDialog: FC<AHPPairwiseComparisonDialogProps> = ({ ope
         "Reliability-Safety Regulations Compliance": 3,
     });
 
+    const [calculateAHP, setCalculateAHP] = useState<boolean>(false);
+
     const handleSliderChange = (key: string) => (event: Event, newValue: number | number[]) => {
         setSliderValues((prev) => ({
             ...prev,
@@ -37,9 +42,51 @@ const AHPPairwiseComparisonDialog: FC<AHPPairwiseComparisonDialogProps> = ({ ope
         }));
     };
 
-    const handleClose = () => {
-        setOpen(false);
+    const criteria = [
+        "Price",
+        "Delivery Time",
+        "Warranty",
+        "Reliability",
+        "Safety Regulations Compliance",
+    ];
+
+    const generateComparisonMatrix = () => {
+        const size = criteria.length;
+        const matrix: number[][] = Array.from({ length: size }, () =>
+            Array(size).fill(1)
+        );
+
+        criteria.forEach((rowCriterion, i) => {
+            criteria.forEach((colCriterion, j) => {
+                if (i === j) return; // Diagonal elements remain 1
+                const key = `${rowCriterion}-${colCriterion}`;
+                const reverseKey = `${colCriterion}-${rowCriterion}`;
+
+                if (sliderValues[key]) {
+                    matrix[i][j] = sliderValues[key];
+                    matrix[j][i] = 1 / sliderValues[key];
+                } else if (sliderValues[reverseKey]) {
+                    matrix[i][j] = 1 / sliderValues[reverseKey];
+                    matrix[j][i] = sliderValues[reverseKey];
+                }
+            });
+        });
+
+        return matrix;
     };
+
+    const handleClose = () => {
+        //setOpen(false);
+        const comparisonMatrix = generateComparisonMatrix();
+        setComparisonMatrix(comparisonMatrix);
+    };
+
+    const handleCalculateWeights = () => {
+        setCalculateAHP(true);
+        setComparisonMatrix(comparisonMatrix || generateComparisonMatrix());
+    }
+
+    console.log('comparisonMatrix', comparisonMatrix);
 
     return (
         <Dialog
@@ -57,7 +104,7 @@ const AHPPairwiseComparisonDialog: FC<AHPPairwiseComparisonDialogProps> = ({ ope
             <DialogTitle>
                 Pairwise Comparison
                 <Typography variant="body2" sx={{ mt: 2, color: "text.secondary" }}>
-                    Please indicate relative importances by using sliders below. (e.g., if price is strongly important than delivery time, proceed the slider to 5)
+                    Please indicate relative importance by using sliders below. (e.g., if price is strongly important than delivery time, proceed the slider to 5)
                 </Typography>
                 <Typography variant="body2" sx={{ mt: 2, color: "text.secondary" }}>
                     Value Legend:
@@ -75,7 +122,7 @@ const AHPPairwiseComparisonDialog: FC<AHPPairwiseComparisonDialogProps> = ({ ope
             </DialogTitle>
             <Divider/>
             <DialogContent>
-                <Grid alignItems="stretch" >
+                {!calculateAHP && (<Grid alignItems="stretch" >
                     {Object.entries(sliderValues).map(([key, value]) => {
                         const [first, second] = key.split("-");
                         return (
@@ -105,11 +152,11 @@ const AHPPairwiseComparisonDialog: FC<AHPPairwiseComparisonDialogProps> = ({ ope
                             </Grid>
                         );
                     })}
-                </Grid>
+                </Grid>)}
+                {calculateAHP && (<AHPTestComponent comparisonMatrix={comparisonMatrix}/>)}
             </DialogContent>
-            <DialogActions sx= {{mt:-1}}>
-                <Button onClick={handleClose}>Disagree</Button>
-                <Button onClick={handleClose}>Agree</Button>
+            <DialogActions sx= {{mt:-1, display:'flex', alignItems:'center'}}>
+                <Button onClick={handleCalculateWeights} variant='outlined'>Calculate Weights</Button>
             </DialogActions>
         </Dialog>
     );
