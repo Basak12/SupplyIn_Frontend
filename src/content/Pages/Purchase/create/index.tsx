@@ -2,11 +2,11 @@ import React, {FC, useState} from 'react';
 import {Card, Typography, Box, Fab} from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import AddIcon from "@mui/icons-material/Add";
-import AHPPairwiseComparisonCard from './components/AHPPairwiseComparisonCard';
+import AHPPairwiseComparisonCard from '../components/AHPPairwiseComparisonCard';
 
-interface PurchasePageProps {}
+interface CreatePurchasePageProps {}
 
-const PurchasePage: FC<PurchasePageProps> = ({}) => {
+const CreatePurchasePage: FC<CreatePurchasePageProps> = ({}) => {
 
     const [open, setOpen] = useState<boolean>(false);
     const [comparisonMatrix, setComparisonMatrix] = useState<number[][] | null>(null);
@@ -25,10 +25,11 @@ const PurchasePage: FC<PurchasePageProps> = ({}) => {
                         <AddIcon />
                     </Fab>
                 </Box>
+                <Typography variant='h5'>create purchase</Typography>
                 {open && <AHPPairwiseComparisonCard comparisonMatrix={comparisonMatrix} setComparisonMatrix={setComparisonMatrix}/> }
             </Grid>
         </Grid>
     );
 };
 
-export default PurchasePage;
+export default CreatePurchasePage;

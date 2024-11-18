@@ -3,8 +3,16 @@ import profileSidebarItems from "./profileSidebarItems";
 import productSidebarItems from "./productSidebarItems";
 import supplierSidebarItems from "./supplierSidebarItems";
 import purchaseSidebarItems from "./purchaseSidebarItems";
+import React from "react";
 
-const sidebarItems = {
+type SidebarItem = {
+    label: string;
+    path: string;
+    icon: React.ElementType;
+    children?: SidebarItem[];
+};
+
+const sidebarItems: { [key: string]: SidebarItem[] } = {
     dashboard: dashboardSidebarItems,
     purchase: purchaseSidebarItems,
     products: productSidebarItems,
