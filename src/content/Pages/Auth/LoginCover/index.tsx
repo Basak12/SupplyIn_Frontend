@@ -14,14 +14,16 @@ const LoginPage: FC<LoginPageProps> = () => {
             backgroundColor: '#F6F6F6',
         }}>
             <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }} sx={{ height: '100vh'}}>
-                <Grid size={6} sx={{ backgroundColor: '#e3d3cf', display: 'flex', flexDirection: 'column', justifyContent: 'center', paddingLeft: '5vw' }}>
+                <Grid size={6} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', paddingLeft: '5vw',
+                backgroundImage: 'url(/images/login_background.png)', backgroundSize: 'cover', backgroundPosition: 'center'
+                }}>
                     <Box sx={{ position: 'absolute', top: 50, left: 70 }}>
-                        <CardMedia component="img" height={45} image='/images/logo.png' alt="logo" sx={{ width: 220 }} />
+                        <CardMedia component="img" height={45} image='/images/logo_white.png' alt="logo" sx={{ width: 220 }} />
                     </Box>
-                    <Typography variant="h1" sx={{ fontWeight: 'bold' }}>
+                    <Typography variant="h1" sx={{ fontWeight: 'bold', color:'whitesmoke' }}>
                         Welcome <br /> to <br />Supply In
                     </Typography>
-                    <Typography variant="h6" sx={{ mt: 2, color: '#333' }}>
+                    <Typography variant="h6" sx={{ mt: 2, color: 'whitesmoke' }}>
                         Because one supplier does not fit all.
                     </Typography>
                 </Grid>
@@ -34,7 +36,7 @@ const LoginPage: FC<LoginPageProps> = () => {
                         <TextField label="Password" type="password" variant="outlined" fullWidth sx={{ mb: 2 }} />
                         <Button
                             onClick={() => navigate('/dashboard')}
-                            variant="contained" fullWidth sx={{ backgroundColor: '#884e4e', color: '#fff' }}>
+                            variant="contained" fullWidth sx={{ backgroundColor: '#2E2E48', color: '#fff' }}>
                             Log in
                         </Button>
                     </Paper>

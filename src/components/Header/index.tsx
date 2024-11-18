@@ -10,7 +10,7 @@ const Header: FC<HeaderProps> = ({pageName}) => {
         <>
             <Box display='flex' alignItems='center'
                 sx = {{
-                backgroundColor: '#16223b',
+                backgroundColor: '#464667',
                 height: 40,
                 padding: 2,
             }}>
