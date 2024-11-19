@@ -37,7 +37,7 @@ const AppRouter: React.FC = () => {
 
     return (
         <>
-            {pathname === '/' ? null : <Header pageName={pathnameConverter(pathname)} />}
+
             <Routes>
                 <Route path="/" element={<LoginPage />} />
                 {routeElements}
@@ -47,3 +47,6 @@ const AppRouter: React.FC = () => {
 };
 
 export default AppRouter;
+/*
+ {pathname === '/' ? null : <Header pageName={pathnameConverter(pathname)} />}
+ */

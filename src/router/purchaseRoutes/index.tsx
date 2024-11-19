@@ -2,6 +2,7 @@ import { lazy } from "react";
 
 const PurchasePage = lazy(() => import('../../content/Pages/Purchase/list'));
 const CreatePurchasePage = lazy(() => import('../../content/Pages/Purchase/create' ));
+const AdjustImportancePage = lazy(() => import('../../content/Pages/Purchase/create/AdjustImportancePage'));
 
 const purchaseRouteItems = [
     {
@@ -11,6 +12,10 @@ const purchaseRouteItems = [
     {
         path: '/purchase/create',
         element: <CreatePurchasePage />,
+    },
+    {
+        path: '/purchase/create/adjustImportance',
+        element: <AdjustImportancePage />,
     },
 ];
 

@@ -28,6 +28,7 @@ function AppContent() {
                 sx={{
                     flexGrow: 1,
                     overflow: "auto",
+                    backgroundColor: '#1e1e2f',
                 }}
             >
                 <AppRouter />
