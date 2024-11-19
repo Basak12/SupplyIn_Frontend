@@ -99,7 +99,7 @@ const CreatePurchasePage: FC = () => {
                             sx={{
                                 backgroundColor:
                                     selectedProduct?.name === product.name
-                                        ? '#6c63ff' // Highlight selected card
+                                        ? '#6c63ff'
                                         : '#2c2c40',
                                 borderRadius: 3,
                                 color: '#ffffff',

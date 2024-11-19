@@ -1,16 +1,27 @@
 import React, {FC} from "react";
-import {Card, Typography} from "@mui/material";
+import {Box, Card, Typography} from "@mui/material";
+import Grid from "@mui/material/Grid2";
 
 interface ProfilePageProps {}
 
 const ProfilePage: FC<ProfilePageProps> = ({}) => {
 
     return (
-        <Card sx={{
-            m:2, p:2
+        <Grid
+            container
+            display='flex'
+            justifyContent='center'
+            alignItems='stretch'
+            m={1}
+            direction='row' sx={{
+            backgroundColor: '#2c2c40',
         }}>
-            <Typography>Profile Page</Typography>
-        </Card>
+            <Grid size={12}>
+                <Box p={3}>
+                    <Typography variant='h6' color='white'>Profile Page</Typography>
+                </Box>
+            </Grid>
+        </Grid>
     );
 };
 

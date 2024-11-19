@@ -6,10 +6,20 @@ interface PurchasePageProps {}
 const PurchasePage: FC<PurchasePageProps> = ({}) => {
 
     return (
-        <Grid container display='flex' justifyContent='center' alignItems='stretch' direction='row' sx={{
-            backgroundColor: '#f6f6f6',
+        <Grid
+            container
+            display='flex'
+            justifyContent='center'
+            alignItems='stretch'
+            m={1}
+            direction='row' sx={{
+            backgroundColor: '#2c2c40',
         }}>
-           <Typography variant='h5'>purchase list</Typography>
+            <Grid size={12}>
+                <Box p={3}>
+                    <Typography variant='h6' color='white'>Product List Page</Typography>
+                </Box>
+            </Grid>
         </Grid>
     );
 };

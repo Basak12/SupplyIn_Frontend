@@ -17,12 +17,32 @@ const DashboardPage: FC<DashboardPageProps> = ({}) => {
         setOpen(true)
     }
 
-    console.log('comparisonMatrix', comparisonMatrix);
-
     return (
         <>
-            <Grid container display='flex' justifyContent='center' alignItems='stretch' direction='row' sx={{
-                backgroundColor: '#f6f6f6',
+            <Grid
+              container
+              display='flex'
+              justifyContent='center'
+              alignItems='stretch'
+              m={1}
+              direction='row' sx={{
+                backgroundColor: '#2c2c40',
+            }}>
+                <Grid size={12}>
+                    <Box p={3}>
+                    <Typography variant='h6' color='white'>Dashboard Page</Typography>
+                    </Box>
+                </Grid>
+            </Grid>
+        </>
+    );
+};
+
+export default DashboardPage;
+
+/*
+ <Grid container display='flex' justifyContent='center' alignItems='stretch' direction='row' sx={{
+                backgroundColor: '#2c2c40',
             }}>
                 <Grid size={12}>
                     <Box display='flex' justifyContent='flex-end' m={1}>
@@ -38,9 +58,4 @@ const DashboardPage: FC<DashboardPageProps> = ({}) => {
                 comparisonMatrix={comparisonMatrix}
                 setComparisonMatrix={setComparisonMatrix}/>
             }
-        </>
-    );
-};
-
-export default DashboardPage;
-
+ */
