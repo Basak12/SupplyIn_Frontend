@@ -4,7 +4,7 @@ import { CircularProgress, Box, Typography } from '@mui/material';
 interface LoadingWrapperProps {
     message?: string;
     size?: number;
-    color?: 'primary';
+    color?: string;
     autoHideDelay?: number; // Delay in milliseconds after which the loader hides
     onHide?: () => void; // Optional callback when the loader hides
 }
@@ -27,12 +27,12 @@ const LoadingWrapper: FC<LoadingWrapperProps> = ({
                 }
             }, autoHideDelay);
 
-            return () => clearTimeout(timer); // Cleanup timer on unmount
+            return () => clearTimeout(timer);
         }
     }, [autoHideDelay, onHide]);
 
     if (!isVisible) {
-        return null; // Do not render anything if not visible
+        return null;
     }
 
     return (
@@ -44,9 +44,11 @@ const LoadingWrapper: FC<LoadingWrapperProps> = ({
             height="100%"
             minHeight="200px"
         >
-            <CircularProgress size={size} color={color} />
+            <CircularProgress size={size} sx={{
+                color: color,
+            }} />
             {message && (
-                <Typography variant="body1" sx={{ mt: 2, color: 'text.secondary' }}>
+                <Typography variant="body1" sx={{ mt: 2, color: 'white' }}>
                     {message}
                 </Typography>
             )}

@@ -14,18 +14,23 @@ import { useLocation } from 'react-router-dom';
 import Grid from "@mui/material/Grid2";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import {ChevronRight} from "@mui/icons-material";
+import AHPTestComponent from "../../../../ahp";
 
 const AdjustImportancePage: FC = () => {
     const location = useLocation();
     const selectedProduct = location.state?.product;
+    const [openAHPComponent, setOpenAHPComponent] = useState(false);
+
+    const [comparisonMatrix, setComparisonMatrix] = useState<number[][] | null>(null);
+
 
     const steps = ['Select Product', 'Adjust Importance', 'View Result and Purchase'];
 
     const [comparisons, setComparisons] = useState({
-        price: { deliveryTime: '', warranty: '', reliability: '', safety: '' },
-        deliveryTime: { warranty: '', reliability: '', safety: '' },
-        warranty: { reliability: '', safety: '' },
-        reliability: { safety: '' },
+        price: { deliveryTime: '1', warranty: '1', reliability: '1', safety: '1' },
+        deliveryTime: { warranty: '1', reliability: '1', safety: '1' },
+        warranty: { reliability: '1', safety: '1' },
+        reliability: { safety: '1' },
     });
 
     const categoryDisplayNames: Record<string, string> = {
@@ -50,18 +55,58 @@ const AdjustImportancePage: FC = () => {
         }));
     };
 
-    const importanceLevels = [
-        'Equal Importance',
-        'Moderate Importance',
-        'Strong Importance',
-        'Very Strong Importance',
-        'Extreme Importance',
-    ];
+    const generateMatrixFromComparisons = () => {
+        const criteria = ["price", "deliveryTime", "warranty", "reliability", "safety"];
+        const matrixSize = criteria.length;
+        const matrix: number[][] = Array.from({ length: matrixSize }, () =>
+            Array(matrixSize).fill(1)
+        );
+        criteria.forEach((criterion, i) => {
+            Object.entries(comparisons[criterion as keyof typeof comparisons] || {}).forEach(([key, value]) => {
+                const j = criteria.indexOf(key);
+                if (value) {
+                    const numericValue = parseFloat(value);
+                    matrix[i][j] = numericValue;
+                    matrix[j][i] = 1 / numericValue;
+                }
+            });
+        });
+        setComparisonMatrix(matrix);
+    };
 
-    console.log('selectedProduct', selectedProduct)
-    console.log('comparisons', comparisons)
+    const handleCalculateWeight = () => {
+        generateMatrixFromComparisons();
+        setOpenAHPComponent(true);
+    };
+
+    const importanceLevels = [
+        {
+            value: 1,
+            label: 'Equal Importance'
+        },
+        {
+            value: 3,
+            label: 'Moderate Importance'
+        },
+        {
+            value: 5,
+            label: 'Strong Importance'
+        },
+        {
+            value: 7,
+            label: 'Very Strong Importance'
+        },
+        {
+            value: 9,
+            label: 'Extreme Importance'
+        }
+    ]
+
+    //console.log('selectedProduct', selectedProduct)
+    //console.log('comparisons', comparisons)
 
     return (
+        <>
         <Box
             sx={{
                 color: '#ffffff',
@@ -116,14 +161,14 @@ const AdjustImportancePage: FC = () => {
                                     mb={2}
                                 >
                                     <Select
-                                        value={(values as any)[key]}
+                                        value={(values as any)[key] || '1'}
                                         onChange={(e) =>
                                             handleChange(category as keyof typeof comparisons, key, e.target.value)
                                         }
                                         displayEmpty
                                         IconComponent={KeyboardArrowDownIcon}
                                         sx={{
-                                            minWidth: 180,
+                                            width: 220,
                                             backgroundColor: '#1e1e30',
                                             color: '#ffffff',
                                             borderRadius: 4,
@@ -134,8 +179,8 @@ const AdjustImportancePage: FC = () => {
                                             Select importance
                                         </MenuItem>
                                         {importanceLevels.map((level) => (
-                                            <MenuItem key={level} value={level}>
-                                                {level}
+                                            <MenuItem key={level.label} value={level.value}>
+                                                {level.label}
                                             </MenuItem>
                                         ))}
                                     </Select>
@@ -153,6 +198,7 @@ const AdjustImportancePage: FC = () => {
             </Grid>
             <Box display="flex" justifyContent="flex-end">
                 <Button
+                    onClick={handleCalculateWeight}
                     endIcon={<ChevronRight />}
                     variant="contained"
                     sx={{
@@ -169,6 +215,14 @@ const AdjustImportancePage: FC = () => {
                 </Button>
             </Box>
         </Box>
+            {openAHPComponent && (
+            <AHPTestComponent
+                comparisonMatrix={comparisonMatrix}
+                openAHPComponent={openAHPComponent}
+                setOpenAHPComponent={setOpenAHPComponent}/>
+            )
+          }
+    </>
     );
 };
 

@@ -1,16 +1,17 @@
 import React, { FC } from 'react';
-import { Card, Typography, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from "@mui/material";
-import LoadingWrapper from '../../components/LoadingWrapper';
+import { Card, Typography, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from "@mui/material";
+import SentimentDissatisfiedIcon from '@mui/icons-material/SentimentDissatisfied';
+import SentimentSatisfiedAltIcon from '@mui/icons-material/SentimentSatisfiedAlt';
 
 
 type Matrix = number[][];
 interface AHPTestComponentProps {
     comparisonMatrix: Matrix | null;
+    openAHPComponent: boolean;
+    setOpenAHPComponent: (value: boolean) => void;
 }
 
-const AHPTestComponent: FC<AHPTestComponentProps> = ({comparisonMatrix}) => {
-
-    const criteriaNames = ["Price", "Delivery Time", "Warranty", "Reliability", "Safety Regulations Compliance"];
+const AHPTestComponent: FC<AHPTestComponentProps> = ({comparisonMatrix, openAHPComponent, setOpenAHPComponent}) => {
 
     // Normalize criteria
     function calculateColumnSums(matrix: Matrix): number[] {
@@ -57,19 +58,117 @@ const AHPTestComponent: FC<AHPTestComponentProps> = ({comparisonMatrix}) => {
     const weights = calculateWeights(normalizedMatrix);
     const consistencyRatio = calculateConsistencyRatio(comparisonMatrix, weights);
 
+    const handleClose = () => {
+        setOpenAHPComponent(false);
+    }
+
+    console.log('consistencyRatio', consistencyRatio);
+    console.log('weights', weights);
+    console.log('normalizedMatrix', normalizedMatrix);
+
+    //todo if consistency is less than 0.1, create a post request to the backend to save weights
+    // todo handle empty and initially filled matrix values. temporarily set to 1 equally importance
+
     return (
         <>
-            {consistencyRatio > 0.1 &&  (
-                <Box sx={{
-                    backgroundColor: '#ff8f8f',
-                    p:2
-                }}>
-                    <Typography variant="subtitle1" textAlign='center'>
-                            Your matrix is inconsistent. Please review your comparisons.
-                        </Typography>
-                </Box>
-            )}
-            {consistencyRatio < 0.1 && (
+            <Dialog
+                open={openAHPComponent}
+                onClose={handleClose}
+                PaperProps={{
+                    sx: {
+                        borderRadius: 4,
+                        p: 3,
+                        backgroundColor: '#2D264B',
+                        color: '#fff',
+                        width: 400,
+                    }
+                }}
+            >
+                <DialogContent sx={{ textAlign: 'center' }}>
+                    {(consistencyRatio > 0.1) &&  (
+                        <>
+                            <Box display="flex" justifyContent="center" alignItems="center" mb={2}>
+                                <SentimentDissatisfiedIcon
+                                    sx={{
+                                        fontSize: 50,
+                                        color: '#F8A33F',
+                                    }}
+                                />
+                            </Box>
+                            <Typography variant="h6" fontWeight="bold" gutterBottom>
+                                Your selections are inconsistent.
+                            </Typography>
+                            <Typography variant="body1">
+                                Please review your comparisons.
+                            </Typography>
+                            <Typography variant="body1">
+                                Consistency Ratio: {consistencyRatio.toFixed(2)}
+                            </Typography>
+                        </>
+                    )}
+                    {(consistencyRatio === 0) &&  (
+                        <>
+                            <Box display="flex" justifyContent="center" alignItems="center" mb={2}>
+                                <SentimentDissatisfiedIcon
+                                    sx={{
+                                        fontSize: 50,
+                                        color: '#F8A33F',
+                                    }}
+                                />
+                            </Box>
+                            <Typography variant="h6" fontWeight="bold" gutterBottom>
+                                Please make a selection
+                            </Typography>
+                            <Typography variant="body1">
+                                Consistency Ratio: {consistencyRatio.toFixed(2)}
+                            </Typography>
+                        </>
+                    )}
+                    {(consistencyRatio < 0.1 && consistencyRatio !== 0) && (
+                        <>
+                            <Box display="flex" justifyContent="center" alignItems="center" mb={2}>
+                                <SentimentSatisfiedAltIcon
+                                    sx={{
+                                        fontSize: 50,
+                                        color: '#F8A33F',
+                                    }}
+                                />
+                            </Box>
+                            <Typography variant="h6" fontWeight="bold" gutterBottom>
+                                Your selections are consistent.
+                            </Typography>
+                            <Typography variant="body1">
+                                Consistency Ratio: {consistencyRatio.toFixed(2)}
+                            </Typography>
+                        </>
+                    )}
+                </DialogContent>
+                <DialogActions sx={{ justifyContent: 'center', mt: 1 }}>
+                    <Button
+                        onClick={handleClose}
+                        sx={{
+                            textTransform: 'none',
+                            backgroundColor: '#4A3F6A',
+                            color: '#fff',
+                            px: 4,
+                            py: 1,
+                            borderRadius: 3,
+                            '&:hover': {
+                                backgroundColor: '#372D54',
+                            },
+                        }}
+                    >
+                        OK
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        </>
+    );
+};
+
+export default AHPTestComponent;
+/*
+ {consistencyRatio < 0.1 && (
                 <LoadingWrapper
                     message="Calculating..."
                     size={50}
@@ -78,8 +177,4 @@ const AHPTestComponent: FC<AHPTestComponentProps> = ({comparisonMatrix}) => {
                 />
 
             )}
-        </>
-    );
-};
-
-export default AHPTestComponent;
+ */
