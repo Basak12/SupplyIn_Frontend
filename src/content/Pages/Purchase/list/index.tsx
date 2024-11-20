@@ -17,7 +17,7 @@ const PurchasePage: FC<PurchasePageProps> = ({}) => {
         }}>
             <Grid size={12}>
                 <Box p={3}>
-                    <Typography variant='h6' color='white'>Product List Page</Typography>
+                    <Typography variant='h6' color='white'>Purchase List Page</Typography>
                 </Box>
             </Grid>
         </Grid>

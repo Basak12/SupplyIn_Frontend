@@ -11,6 +11,7 @@ import { useLocation } from "react-router-dom";
 import Grid from "@mui/material/Grid2";
 import BestSupplierCard from "./components/BestSupplierCard";
 import RankingTable from "./components/RankingTable";
+import SavePurchaseDialog from "./components/SavePurchaseDialog";
 
 type Supplier = {
     name: string;
@@ -29,6 +30,7 @@ const TOPSISResults: FC = () => {
     const steps = ["Select Product", "Adjust Importance", "View Result and Purchase"];
 
     const [sortedSuppliers, setSortedSuppliers] = useState<SupplierScore[]>([]);
+    const [open, setOpen] = useState<boolean>(false);
 
     const suppliers: Supplier[] = [
         { name: "Supplier A", criteria: [300, 4, 5, 8, 9] },
@@ -108,7 +110,13 @@ const TOPSISResults: FC = () => {
 
     const bestSupplier = sortedSuppliers[0];
 
+    const handlePurchase = () => {
+        setOpen(true);
+        //todo create a post request to the backend to save purchase
+    }
+
     return (
+      <>
         <Box
             sx={{
                 color: "#ffffff",
@@ -137,29 +145,36 @@ const TOPSISResults: FC = () => {
                 ))}
             </Stepper>
             <Grid container spacing={4} justifyContent='center'>
-                {bestSupplier && (
                     <BestSupplierCard bestSupplier={bestSupplier} />
-                )}
                 <Grid size={{xs:12, md:8}}>
                     <RankingTable sortedSuppliers={sortedSuppliers} selectedProduct={selectedProduct} />
                 </Grid>
-                    <Button
-                        variant="contained"
-                        size="large"
-                        sx={{
-                            backgroundColor: "#6c63ff",
-                            color: "white",
-                            mt: 3,
-                            textTransform: "none",
-                            "&:hover": {
-                                backgroundColor: "#5a54d4",
-                            },
-                        }}
-                    >
-                        Purchase
-                    </Button>
+                <Button
+                    onClick={handlePurchase}
+                    variant="contained"
+                    sx={{
+                        backgroundColor: "#6c63ff",
+                        color: "white",
+                        mt: 3,
+                        textTransform: "none",
+                        fontSize: "1.2rem",
+                        paddingY: 2,
+                        paddingX: 12,
+                        width: "20%",
+                        "&:hover": {
+                            backgroundColor: "#5a54d4",
+                        },
+                    }}
+                >
+                    Purchase
+                </Button>
+
             </Grid>
         </Box>
+          {open &&
+              <SavePurchaseDialog selectedProduct={selectedProduct} bestSupplier={bestSupplier} open={open} setOpen={setOpen} />
+          }
+     </>
     );
 };
 
