@@ -2,16 +2,9 @@ import React, { FC, useState, useEffect } from "react";
 import {
     Box,
     Button,
-    Card,
     Stepper,
     Step,
     StepLabel,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
     Typography,
 } from "@mui/material";
 import { useLocation } from "react-router-dom";
@@ -32,6 +25,7 @@ type SupplierScore = {
 const TOPSISResults: FC = () => {
     const location = useLocation();
     const weights = location.state?.weights;
+    const selectedProduct = location.state?.product;
     const steps = ["Select Product", "Adjust Importance", "View Result and Purchase"];
 
     const [sortedSuppliers, setSortedSuppliers] = useState<SupplierScore[]>([]);
@@ -147,7 +141,7 @@ const TOPSISResults: FC = () => {
                     <BestSupplierCard bestSupplier={bestSupplier} />
                 )}
                 <Grid size={{xs:12, md:8}}>
-                    <RankingTable sortedSuppliers={sortedSuppliers} />
+                    <RankingTable sortedSuppliers={sortedSuppliers} selectedProduct={selectedProduct} />
                 </Grid>
                     <Button
                         variant="contained"

@@ -10,9 +10,10 @@ interface AHPTestComponentProps {
     comparisonMatrix: Matrix | null;
     openAHPComponent: boolean;
     setOpenAHPComponent: (value: boolean) => void;
+    selectedProduct: any;
 }
 
-const AHPTestComponent: FC<AHPTestComponentProps> = ({comparisonMatrix, openAHPComponent, setOpenAHPComponent}) => {
+const AHPTestComponent: FC<AHPTestComponentProps> = ({comparisonMatrix, openAHPComponent, setOpenAHPComponent, selectedProduct}) => {
 
     const navigate = useNavigate();
 
@@ -66,7 +67,7 @@ const AHPTestComponent: FC<AHPTestComponentProps> = ({comparisonMatrix, openAHPC
             setOpenAHPComponent(false);
         }
         if (consistencyRatio < 0.1 && consistencyRatio !== 0){
-            navigate('/purchase/create/topsisResults', {state: {weights: weights}});
+            navigate('/purchase/create/topsisResults', {state: {weights: weights, product: selectedProduct}});
         }
 
     }

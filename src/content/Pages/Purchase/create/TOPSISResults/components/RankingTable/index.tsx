@@ -21,11 +21,18 @@ type SupplierScore = {
 
 interface RankingTableProps {
     sortedSuppliers: SupplierScore[] | null;
+    selectedProduct: any;
 }
 
-const RankingTable: FC<RankingTableProps> = ({sortedSuppliers}) => {
+const RankingTable: FC<RankingTableProps> = ({sortedSuppliers, selectedProduct}) => {
 
     if(sortedSuppliers === null || sortedSuppliers === undefined) {
+        return <Typography variant='h6' sx={{
+            color: '#ffffff'
+        }}>Loading</Typography>;
+    }
+
+    if(selectedProduct === null || selectedProduct === undefined) {
         return <Typography variant='h6' sx={{
             color: '#ffffff'
         }}>Loading</Typography>;
@@ -41,7 +48,7 @@ const RankingTable: FC<RankingTableProps> = ({sortedSuppliers}) => {
             }}
         >
             <Typography variant="h6" color="#f5f5f5" mb={2}>
-                Result of Suppliers for Product A
+                Result of Suppliers for {selectedProduct.name}
             </Typography>
             <TableContainer>
                 <Table>

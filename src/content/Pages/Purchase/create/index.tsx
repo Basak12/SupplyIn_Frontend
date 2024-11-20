@@ -44,7 +44,6 @@ const CreatePurchasePage: FC = () => {
                 p: 4,
             }}
         >
-            {/* Header */}
             <Typography variant="h4" align="center" gutterBottom>
                 Supplier Selection
             </Typography>

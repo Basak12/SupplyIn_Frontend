@@ -217,6 +217,7 @@ const AdjustImportancePage: FC = () => {
         </Box>
             {openAHPComponent && (
             <AHPTestComponent
+                selectedProduct={selectedProduct}
                 comparisonMatrix={comparisonMatrix}
                 openAHPComponent={openAHPComponent}
                 setOpenAHPComponent={setOpenAHPComponent}/>
