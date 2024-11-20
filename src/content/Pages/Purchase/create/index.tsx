@@ -14,6 +14,7 @@ import {
 import SearchIcon from '@mui/icons-material/Search';
 import Grid from '@mui/material/Grid2';
 import { useNavigate } from 'react-router-dom';
+import {ChevronRight} from "@mui/icons-material";
 
 const CreatePurchasePage: FC = () => {
     const [selectedProduct, setSelectedProduct] = useState<any>(null);
@@ -89,8 +90,6 @@ const CreatePurchasePage: FC = () => {
                     }}
                 />
             </Box>
-
-            {/* Product Cards */}
             <Grid container spacing={3}>
                 {products.map((product, index) => (
                     <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={index}>
@@ -130,6 +129,7 @@ const CreatePurchasePage: FC = () => {
             {selectedProduct && (
                 <Box display="flex" justifyContent="center" mt={4}>
                     <Button
+                        endIcon={<ChevronRight />}
                         variant="contained"
                         onClick={handleContinue}
                         sx={{

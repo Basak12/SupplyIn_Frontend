@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 import { Card, Typography, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from "@mui/material";
 import SentimentDissatisfiedIcon from '@mui/icons-material/SentimentDissatisfied';
 import SentimentSatisfiedAltIcon from '@mui/icons-material/SentimentSatisfiedAlt';
+import {useNavigate} from "react-router-dom";
 
 
 type Matrix = number[][];
@@ -12,6 +13,8 @@ interface AHPTestComponentProps {
 }
 
 const AHPTestComponent: FC<AHPTestComponentProps> = ({comparisonMatrix, openAHPComponent, setOpenAHPComponent}) => {
+
+    const navigate = useNavigate();
 
     // Normalize criteria
     function calculateColumnSums(matrix: Matrix): number[] {
@@ -59,7 +62,12 @@ const AHPTestComponent: FC<AHPTestComponentProps> = ({comparisonMatrix, openAHPC
     const consistencyRatio = calculateConsistencyRatio(comparisonMatrix, weights);
 
     const handleClose = () => {
-        setOpenAHPComponent(false);
+        if(consistencyRatio > 0.1 || consistencyRatio === 0) {
+            setOpenAHPComponent(false);
+        }
+        if (consistencyRatio < 0.1) {
+            navigate('/purchase/create/topsisResults', {state: {weights: weights}});
+        }
     }
 
     console.log('consistencyRatio', consistencyRatio);
@@ -104,6 +112,13 @@ const AHPTestComponent: FC<AHPTestComponentProps> = ({comparisonMatrix, openAHPC
                             <Typography variant="body1">
                                 Consistency Ratio: {consistencyRatio.toFixed(2)}
                             </Typography>
+                            <Box mt={1}>
+                                {weights.map((weight, idx) => (
+                                    <Typography key={idx} variant="body1">
+                                        {weight.toFixed(2)}
+                                    </Typography>
+                                ))}
+                            </Box>
                         </>
                     )}
                     {(consistencyRatio === 0) &&  (
@@ -140,6 +155,13 @@ const AHPTestComponent: FC<AHPTestComponentProps> = ({comparisonMatrix, openAHPC
                             <Typography variant="body1">
                                 Consistency Ratio: {consistencyRatio.toFixed(2)}
                             </Typography>
+                            <Box mt={1}>
+                                {weights.map((weight, idx) => (
+                                    <Typography key={idx} variant="body1">
+                                        {weight.toFixed(2)}
+                                    </Typography>
+                                ))}
+                            </Box>
                         </>
                     )}
                 </DialogContent>
