@@ -65,9 +65,10 @@ const AHPTestComponent: FC<AHPTestComponentProps> = ({comparisonMatrix, openAHPC
         if(consistencyRatio > 0.1 || consistencyRatio === 0) {
             setOpenAHPComponent(false);
         }
-        if (consistencyRatio < 0.1) {
+        if (consistencyRatio < 0.1 && consistencyRatio !== 0){
             navigate('/purchase/create/topsisResults', {state: {weights: weights}});
         }
+
     }
 
     console.log('consistencyRatio', consistencyRatio);

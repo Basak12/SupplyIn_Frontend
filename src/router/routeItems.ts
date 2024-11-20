@@ -3,6 +3,7 @@ import profileRouteItems from './profileRoutes';
 import productRouteItems from "./productRoutes";
 import supplierRouteItems from "./supplierRoutes";
 import purchaseRouteItems from './purchaseRoutes';
+import userRouteItems from "./userRoutes";
 
 const allRouteItems = {
     dashboard: dashboardRouteItems,
@@ -10,6 +11,7 @@ const allRouteItems = {
     productRouteItems,
     supplierRouteItems,
     purchaseRouteItems,
+    userRouteItems,
 };
 
 export default allRouteItems;
