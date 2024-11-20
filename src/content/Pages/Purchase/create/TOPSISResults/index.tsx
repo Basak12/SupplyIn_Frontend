@@ -1,127 +1,171 @@
-import React, {FC, useState} from 'react';
-import {Card, Typography, Box, Fab} from "@mui/material";
+import React, { FC, useState, useEffect } from "react";
+import {
+    Box,
+    Button,
+    Card,
+    Stepper,
+    Step,
+    StepLabel,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Typography,
+} from "@mui/material";
+import { useLocation } from "react-router-dom";
 import Grid from "@mui/material/Grid2";
-import {useLocation} from "react-router-dom";
-interface TOPSISResultsProps {}
+import BestSupplierCard from "./components/BestSupplierCard";
+import RankingTable from "./components/RankingTable";
 
 type Supplier = {
     name: string;
     criteria: number[];
 };
 
-const TOPSISResults: FC<TOPSISResultsProps> = ({}) => {
+type SupplierScore = {
+    name: string;
+    score: number;
+};
 
+const TOPSISResults: FC = () => {
     const location = useLocation();
     const weights = location.state?.weights;
+    const steps = ["Select Product", "Adjust Importance", "View Result and Purchase"];
 
-    console.log(weights.map((weight: number) => weight.toFixed(2)));
+    const [sortedSuppliers, setSortedSuppliers] = useState<SupplierScore[]>([]);
 
     const suppliers: Supplier[] = [
-        { name: 'Supplier A', criteria: [300, 4, 5, 8, 9] },
-        { name: 'Supplier B', criteria: [250, 3, 6, 7, 8] },
-        { name: 'Supplier C', criteria: [400, 5, 3, 9, 10] }
+        { name: "Supplier A", criteria: [300, 4, 5, 8, 9] },
+        { name: "Supplier B", criteria: [250, 3, 6, 7, 8] },
+        { name: "Supplier C", criteria: [400, 5, 3, 9, 10] },
     ];
 
-    function normalizeMatrix(suppliers: Supplier[]): number[][] {
-        const transposed = suppliers[0].criteria.map((_, colIndex) =>
-            suppliers.map(row => row.criteria[colIndex])
-        );
-        return suppliers.map(supplier =>
-            supplier.criteria.map((value, index) =>
-                value / Math.sqrt(transposed[index].reduce((sum, val) => sum + val ** 2, 0))
-            )
-        );
-    }
+    useEffect(() => {
+        if (weights) {
+            // Normalize matrix
+            const normalizeMatrix = (suppliers: Supplier[]): number[][] => {
+                const transposed = suppliers[0].criteria.map((_, colIndex) =>
+                    suppliers.map(row => row.criteria[colIndex])
+                );
+                return suppliers.map(supplier =>
+                    supplier.criteria.map((value, index) =>
+                        value / Math.sqrt(transposed[index].reduce((sum, val) => sum + val ** 2, 0))
+                    )
+                );
+            };
 
-    function weightedNormalizeMatrix(normalizedMatrix: number[][], weights: number[]): number[][] {
-        return normalizedMatrix.map(row =>
-            row.map((value, index) => value * weights[index])
-        );
-    }
+            // Weighted normalize matrix
+            const weightedNormalizeMatrix = (normalizedMatrix: number[][], weights: number[]): number[][] => {
+                return normalizedMatrix.map(row =>
+                    row.map((value, index) => value * weights[index])
+                );
+            };
 
-    function findIdealSolutions(weightedMatrix: number[][]): { ideal: number[]; antiIdeal: number[] } {
-        const ideal = weightedMatrix[0].map((_, colIndex) =>
-            Math.max(...weightedMatrix.map(row => row[colIndex]))
-        );
-        const antiIdeal = weightedMatrix[0].map((_, colIndex) =>
-            Math.min(...weightedMatrix.map(row => row[colIndex]))
-        );
-        return { ideal, antiIdeal };
-    }
+            // Find ideal and anti-ideal solutions
+            const findIdealSolutions = (weightedMatrix: number[][]): { ideal: number[]; antiIdeal: number[] } => {
+                const ideal = weightedMatrix[0].map((_, colIndex) =>
+                    Math.max(...weightedMatrix.map(row => row[colIndex]))
+                );
+                const antiIdeal = weightedMatrix[0].map((_, colIndex) =>
+                    Math.min(...weightedMatrix.map(row => row[colIndex]))
+                );
+                return { ideal, antiIdeal };
+            };
 
-    function calculateDistances(weightedMatrix: number[][], ideal: number[], antiIdeal: number[]): { distancesToIdeal: number[]; distancesToAntiIdeal: number[] } {
-        const distancesToIdeal = weightedMatrix.map(row =>
-            Math.sqrt(row.reduce((sum, value, index) => sum + (value - ideal[index]) ** 2, 0))
-        );
-        const distancesToAntiIdeal = weightedMatrix.map(row =>
-            Math.sqrt(row.reduce((sum, value, index) => sum + (value - antiIdeal[index]) ** 2, 0))
-        );
-        return { distancesToIdeal, distancesToAntiIdeal };
-    }
+            // Calculate distances
+            const calculateDistances = (
+                weightedMatrix: number[][],
+                ideal: number[],
+                antiIdeal: number[]
+            ): { distancesToIdeal: number[]; distancesToAntiIdeal: number[] } => {
+                const distancesToIdeal = weightedMatrix.map(row =>
+                    Math.sqrt(row.reduce((sum, value, index) => sum + (value - ideal[index]) ** 2, 0))
+                );
+                const distancesToAntiIdeal = weightedMatrix.map(row =>
+                    Math.sqrt(row.reduce((sum, value, index) => sum + (value - antiIdeal[index]) ** 2, 0))
+                );
+                return { distancesToIdeal, distancesToAntiIdeal };
+            };
 
-    function calculateScores(distancesToIdeal: number[], distancesToAntiIdeal: number[]): number[] {
-        return distancesToAntiIdeal.map((distance, index) =>
-            distance / (distance + distancesToIdeal[index])
-        );
-    }
+            // Calculate scores
+            const calculateScores = (distancesToIdeal: number[], distancesToAntiIdeal: number[]): number[] => {
+                return distancesToAntiIdeal.map((distance, index) =>
+                    distance / (distance + distancesToIdeal[index])
+                );
+            };
 
-    const normalizedMatrix = normalizeMatrix(suppliers);
-    const weightedMatrix = weightedNormalizeMatrix(normalizedMatrix, weights);
-    const { ideal, antiIdeal } = findIdealSolutions(weightedMatrix);
-    const { distancesToIdeal, distancesToAntiIdeal } = calculateDistances(weightedMatrix, ideal, antiIdeal);
-    const scores = calculateScores(distancesToIdeal, distancesToAntiIdeal);
+            const normalizedMatrix = normalizeMatrix(suppliers);
+            const weightedMatrix = weightedNormalizeMatrix(normalizedMatrix, weights);
+            const { ideal, antiIdeal } = findIdealSolutions(weightedMatrix);
+            const { distancesToIdeal, distancesToAntiIdeal } = calculateDistances(weightedMatrix, ideal, antiIdeal);
+            const scores = calculateScores(distancesToIdeal, distancesToAntiIdeal);
 
-    suppliers.forEach((supplier, index) => {
-        console.log(`${supplier.name} - Score: ${scores[index]}`);
-    });
+            const rankedSuppliers = suppliers.map((supplier, index) => ({
+                name: supplier.name,
+                score: scores[index],
+            })).sort((a, b) => b.score - a.score);
 
-    const bestSupplierIndex = scores.indexOf(Math.max(...scores));
-    console.log(`Best Supplier: ${suppliers[bestSupplierIndex].name}`);
+            setSortedSuppliers(rankedSuppliers);
+        }
+    }, [weights]);
 
-    //todo post TOPSIS rsults to backend
+
+    const bestSupplier = sortedSuppliers[0];
 
     return (
-        <Grid
-            container
-            display='flex'
-            justifyContent='center'
-            alignItems='stretch'
-            m={1}
-            direction='row' sx={{
-            backgroundColor: '#2c2c40',
-        }}>
-            <Grid size={12}>
-                <Box p={3}>
-                    <Typography variant='h6' color='white'>TOPSIS Result Page</Typography>
-                </Box>
-            </Grid>
-            <Grid size={12}>
-                <Box p={3}>
-                    {
-                        suppliers.map((supplier, index) => (
-                            <Card key={index} sx={{
-                                backgroundColor: bestSupplierIndex === index ? '#6c63ff' : '#2c2c40',
-                                borderRadius: 3,
-                                color: '#ffffff',
-                                height: 150,
-                                display: 'flex',
-                                flexDirection: 'column',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                transition: 'transform 0.2s',
-                                cursor: 'pointer',
-                                '&:hover': {
-                                    transform: 'scale(1.05)',
-                                },
+        <Box
+            sx={{
+                color: "#ffffff",
+                p: 4,
+            }}
+        >
+            <Typography variant="h4" align="left" gutterBottom>
+                Supplier Selection
+            </Typography>
+            <Stepper alternativeLabel activeStep={2} sx={{ mb: 4 }}>
+                {steps.map(label => (
+                    <Step key={label}>
+                        <StepLabel
+                            sx={{
+                                "& .MuiStepLabel-label": { color: "#ffffff" },
+                                "& .MuiStepIcon-root": { color: "#6c63ff" },
+                            }}
+                        >
+                            <Typography sx={{
+                                color:'white'
                             }}>
-                                <Typography variant='h6' align='center'>{supplier.name}</Typography>
-                                <Typography variant='body2' align='center'>Score: {scores[index].toFixed(2)}</Typography>
-                            </Card>
-                        ))
-                    }
-                </Box>
+                                {label}
+                            </Typography>
+                        </StepLabel>
+                    </Step>
+                ))}
+            </Stepper>
+            <Grid container spacing={4} justifyContent='center'>
+                {bestSupplier && (
+                    <BestSupplierCard bestSupplier={bestSupplier} />
+                )}
+                <Grid size={{xs:12, md:8}}>
+                    <RankingTable sortedSuppliers={sortedSuppliers} />
+                </Grid>
+                    <Button
+                        variant="contained"
+                        size="large"
+                        sx={{
+                            backgroundColor: "#6c63ff",
+                            color: "white",
+                            mt: 3,
+                            textTransform: "none",
+                            "&:hover": {
+                                backgroundColor: "#5a54d4",
+                            },
+                        }}
+                    >
+                        Purchase
+                    </Button>
             </Grid>
-        </Grid>
+        </Box>
     );
 };
 
