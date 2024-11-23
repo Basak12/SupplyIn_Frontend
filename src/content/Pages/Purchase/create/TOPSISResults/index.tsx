@@ -1,4 +1,4 @@
-import React, { FC, useState, useEffect } from "react";
+import React, {FC, useState, useEffect, useCallback} from "react";
 import {
     Box,
     Button,
@@ -12,15 +12,20 @@ import Grid from "@mui/material/Grid2";
 import BestSupplierCard from "./components/BestSupplierCard";
 import RankingTable from "./components/RankingTable";
 import SavePurchaseDialog from "./components/SavePurchaseDialog";
+import {postCriteriaWeight} from "../../../../../api/postCriteriaWeight";
+import {postPurchaseResult} from "../../../../../api/postPurchaseResult";
+import product from "../../../Product";
 
 type Supplier = {
     name: string;
     criteria: number[];
+    id: number;
 };
 
 type SupplierScore = {
     name: string;
     score: number;
+    supplierId: number;
 };
 
 const TOPSISResults: FC = () => {
@@ -33,9 +38,9 @@ const TOPSISResults: FC = () => {
     const [open, setOpen] = useState<boolean>(false);
 
     const suppliers: Supplier[] = [
-        { name: "Supplier A", criteria: [300, 4, 5, 8, 9] },
-        { name: "Supplier B", criteria: [250, 3, 6, 7, 8] },
-        { name: "Supplier C", criteria: [400, 5, 3, 9, 10] },
+        { name: "Supplier A", criteria: [300, 4, 5, 8, 9], id: 1 },
+        { name: "Supplier B", criteria: [250, 3, 6, 7, 8], id: 2  },
+        { name: "Supplier C", criteria: [400, 5, 3, 9, 10], id: 3 },
     ];
 
     useEffect(() => {
@@ -101,6 +106,7 @@ const TOPSISResults: FC = () => {
             const rankedSuppliers = suppliers.map((supplier, index) => ({
                 name: supplier.name,
                 score: scores[index],
+                supplierId: supplier.id,
             })).sort((a, b) => b.score - a.score);
 
             setSortedSuppliers(rankedSuppliers);
@@ -110,10 +116,31 @@ const TOPSISResults: FC = () => {
 
     const bestSupplier = sortedSuppliers[0];
 
+    const postPurchaseResult = useCallback(async () => {
+        if(!selectedProduct?.id || !bestSupplier?.supplierId || !bestSupplier?.score) {
+            console.error('Product or supplier is missing');
+            return;
+        };
+        try {
+            const response = await postCriteriaWeight({
+                productId: selectedProduct.id,
+                supplierId: bestSupplier.supplierId,
+                supplierScore: bestSupplier.score,
+            });
+
+            console.log('Criteria weight saved successfully:', response);
+        } catch (error) {
+            console.error('Error saving criteria weight:', error);
+        }
+    }, []);
+
     const handlePurchase = () => {
         setOpen(true);
-        //todo create a post request to the backend to save purchase
+        postPurchaseResult();
+
     }
+    console.log('bestSupplier', bestSupplier)
+    console.log('selectedProduct', selectedProduct)
 
     return (
       <>

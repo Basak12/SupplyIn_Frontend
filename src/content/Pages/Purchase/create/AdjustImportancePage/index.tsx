@@ -103,7 +103,7 @@ const AdjustImportancePage: FC = () => {
     ]
 
     //console.log('selectedProduct', selectedProduct)
-    //console.log('comparisons', comparisons)
+    console.log('comparisons', comparisons)
 
     return (
         <>

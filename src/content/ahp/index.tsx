@@ -1,8 +1,9 @@
-import React, { FC } from 'react';
+import React, {FC, useCallback, useState} from 'react';
 import { Card, Typography, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from "@mui/material";
 import SentimentDissatisfiedIcon from '@mui/icons-material/SentimentDissatisfied';
 import SentimentSatisfiedAltIcon from '@mui/icons-material/SentimentSatisfiedAlt';
 import {useNavigate} from "react-router-dom";
+import {postCriteriaWeight} from "../../api/postCriteriaWeight";
 
 
 type Matrix = number[][];
@@ -14,7 +15,6 @@ interface AHPTestComponentProps {
 }
 
 const AHPTestComponent: FC<AHPTestComponentProps> = ({comparisonMatrix, openAHPComponent, setOpenAHPComponent, selectedProduct}) => {
-
     const navigate = useNavigate();
 
     // Normalize criteria
@@ -62,22 +62,39 @@ const AHPTestComponent: FC<AHPTestComponentProps> = ({comparisonMatrix, openAHPC
     const weights = calculateWeights(normalizedMatrix);
     const consistencyRatio = calculateConsistencyRatio(comparisonMatrix, weights);
 
+    const handleSaveCriteriaWeight = useCallback(async () => {
+        if (!selectedProduct?.id || !weights?.length) {
+          console.error('Product or weights are missing');
+            return;
+        }
+        try {
+            const response = await postCriteriaWeight({
+                ProID: 1,
+                ReliabilityScore: weights[0],
+                PriceScore: weights[1],
+                DeliveryTimeScore: weights[2],
+                WarrantyScore: weights[3],
+                ComplianceScore: weights[4],
+            });
+
+            console.log('Criteria weight saved successfully:', response);
+        } catch (error) {
+            console.error('Error saving criteria weight:', error);
+        }
+    }, [selectedProduct, weights]);
+
+
     const handleClose = () => {
         if(consistencyRatio > 0.1 || consistencyRatio === 0) {
             setOpenAHPComponent(false);
         }
         if (consistencyRatio < 0.1 && consistencyRatio !== 0){
+            //handleSaveCriteriaWeight()
             navigate('/purchase/create/topsisResults', {state: {weights: weights, product: selectedProduct}});
         }
 
     }
 
-    console.log('consistencyRatio', consistencyRatio);
-    console.log('weights', weights);
-    console.log('normalizedMatrix', normalizedMatrix);
-
-    //todo if consistency is less than 0.1, create a post request to the backend to save weights
-    // todo handle empty and initially filled matrix values. temporarily set to 1 equally importance
 
     return (
         <>
