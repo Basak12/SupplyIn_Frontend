@@ -66,10 +66,10 @@ const CreatePurchasePage: FC = () => {
                 p: 4,
             }}
         >
-            <Typography variant="h4" align="center" gutterBottom>
+            <Typography variant="h4" align="left" gutterBottom sx={{marginBottom: "2rem"}}>
                 Supplier Selection
             </Typography>
-            <Stepper alternativeLabel activeStep={0} sx={{ mb: 4 }}>
+            <Stepper alternativeLabel activeStep={0} sx={{ mb: 10 }}>
                 {steps.map((label) => (
                     <Step key={label} sx={{
                         color:'white'
