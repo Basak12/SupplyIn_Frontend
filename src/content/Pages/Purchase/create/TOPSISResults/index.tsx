@@ -171,7 +171,7 @@ const TOPSISResults: FC = () => {
                     </Step>
                 ))}
             </Stepper>
-            <Grid container spacing={4} justifyContent='center'>
+            <Grid container spacing={4} justifyContent='left'>
                     <BestSupplierCard bestSupplier={bestSupplier} />
                 <Grid size={{xs:12, md:8}}>
                     <RankingTable sortedSuppliers={sortedSuppliers} selectedProduct={selectedProduct} />
@@ -182,9 +182,10 @@ const TOPSISResults: FC = () => {
                     sx={{
                         backgroundColor: "#6c63ff",
                         color: "white",
-                        mt: 3,
                         textTransform: "none",
                         fontSize: "1.2rem",
+                        mt: -10,
+                        ml:10,
                         paddingY: 2,
                         paddingX: 12,
                         width: "20%",
