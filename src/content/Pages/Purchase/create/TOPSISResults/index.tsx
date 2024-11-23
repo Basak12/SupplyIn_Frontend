@@ -65,15 +65,23 @@ const TOPSISResults: FC = () => {
             };
 
             // Find ideal and anti-ideal solutions
+            const criteriaTypes = ["cost", "cost", "benefit", "benefit", "benefit"]; // Example: Price, Delivery Time -> cost; Others -> benefit
+
             const findIdealSolutions = (weightedMatrix: number[][]): { ideal: number[]; antiIdeal: number[] } => {
                 const ideal = weightedMatrix[0].map((_, colIndex) =>
-                    Math.max(...weightedMatrix.map(row => row[colIndex]))
+                    criteriaTypes[colIndex] === "benefit"
+                        ? Math.max(...weightedMatrix.map(row => row[colIndex]))
+                        : Math.min(...weightedMatrix.map(row => row[colIndex]))
                 );
-                const antiIdeal = weightedMatrix[0].map((_, colIndex) =>
-                    Math.min(...weightedMatrix.map(row => row[colIndex]))
+            const antiIdeal = weightedMatrix[0].map((_, colIndex) =>
+                criteriaTypes[colIndex] === "benefit"
+                    ? Math.min(...weightedMatrix.map(row => row[colIndex]))
+                    : Math.max(...weightedMatrix.map(row => row[colIndex]))
                 );
                 return { ideal, antiIdeal };
             };
+
+        
 
             // Calculate distances
             const calculateDistances = (
