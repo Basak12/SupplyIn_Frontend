@@ -65,15 +65,23 @@ const TOPSISResults: FC = () => {
             };
 
             // Find ideal and anti-ideal solutions
+            const criteriaTypes = ["cost", "cost", "benefit", "benefit", "benefit"]; // Example: Price, Delivery Time -> cost; Others -> benefit
+
             const findIdealSolutions = (weightedMatrix: number[][]): { ideal: number[]; antiIdeal: number[] } => {
                 const ideal = weightedMatrix[0].map((_, colIndex) =>
-                    Math.max(...weightedMatrix.map(row => row[colIndex]))
+                    criteriaTypes[colIndex] === "benefit"
+                        ? Math.max(...weightedMatrix.map(row => row[colIndex]))
+                        : Math.min(...weightedMatrix.map(row => row[colIndex]))
                 );
-                const antiIdeal = weightedMatrix[0].map((_, colIndex) =>
-                    Math.min(...weightedMatrix.map(row => row[colIndex]))
+            const antiIdeal = weightedMatrix[0].map((_, colIndex) =>
+                criteriaTypes[colIndex] === "benefit"
+                    ? Math.min(...weightedMatrix.map(row => row[colIndex]))
+                    : Math.max(...weightedMatrix.map(row => row[colIndex]))
                 );
                 return { ideal, antiIdeal };
             };
+
+        
 
             // Calculate distances
             const calculateDistances = (
@@ -136,7 +144,7 @@ const TOPSISResults: FC = () => {
 
     const handlePurchase = () => {
         setOpen(true);
-        postPurchaseResult();
+        //postPurchaseResult();
 
     }
     console.log('bestSupplier', bestSupplier)
@@ -150,11 +158,11 @@ const TOPSISResults: FC = () => {
                 p: 4,
             }}
         >
-            <Typography variant="h4" align="left" gutterBottom>
+            <Typography variant="h4" align="left" gutterBottom sx={{marginBottom: "2rem"}}>
                 Supplier Selection
             </Typography>
-            <Stepper alternativeLabel activeStep={2} sx={{ mb: 4 }}>
-                {steps.map(label => (
+            <Stepper alternativeLabel activeStep={2} sx={{ mb: 10 }}>
+                {steps.map((label) => (
                     <Step key={label}>
                         <StepLabel
                             sx={{

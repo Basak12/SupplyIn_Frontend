@@ -113,10 +113,10 @@ const AdjustImportancePage: FC = () => {
                 p: 4,
             }}
         >
-            <Typography variant="h4" align="left" gutterBottom>
+            <Typography variant="h4" align="left" gutterBottom sx={{marginBottom: "2rem"}}>
                 Supplier Selection
             </Typography>
-            <Stepper alternativeLabel activeStep={1} sx={{ mb: 4 }}>
+            <Stepper alternativeLabel activeStep={1} sx={{ mb: 10 }}>
                 {steps.map((label) => (
                     <Step key={label} sx={{
                         color:'white'
@@ -169,6 +169,7 @@ const AdjustImportancePage: FC = () => {
                                         IconComponent={KeyboardArrowDownIcon}
                                         sx={{
                                             width: 220,
+                                            height: 40,
                                             backgroundColor: '#1e1e30',
                                             color: '#ffffff',
                                             borderRadius: 4,

@@ -22,18 +22,19 @@ const CreatePurchasePage: FC = () => {
     const navigate = useNavigate();
     const [products, setProducts] = useState<any>(null);
 
-    const fetchProducts = useCallback(async () => {
-        try {
-            const response = await getProducts();
-            setProducts(response);
-        } catch (error) {
-            console.error('Error fetching users:', error);
-        }
-    }, []);
+    //const fetchProducts = useCallback(async () => {
+    //    try {
+    //        const response = await getProducts();
+    //        setProducts(response);
+    //    } catch (error) {
+    //        console.error('Error fetching users:', error);
+    //    }
+    //}, [])
+    ;
 
-    useEffect(() => {
-        fetchProducts();
-    }, [fetchProducts]);
+    //useEffect(() => {
+    //    fetchProducts();
+    //}, [fetchProducts]);
 
     const steps = ['Select Product', 'Adjust Importance', 'View Result and Purchase'];
 
@@ -52,9 +53,9 @@ const CreatePurchasePage: FC = () => {
         navigate('/purchase/create/adjustImportance', { state: { product: selectedProduct } });
     };
 
-    if(products === null || products === undefined) {
-        return <div>Loading...</div>;
-    }
+    //if(products === null || products === undefined) {
+    //    return <div>Loading...</div>;
+    //}
 
     //console.log('products', products);
 
@@ -65,10 +66,10 @@ const CreatePurchasePage: FC = () => {
                 p: 4,
             }}
         >
-            <Typography variant="h4" align="center" gutterBottom>
+            <Typography variant="h4" align="left" gutterBottom sx={{marginBottom: "2rem"}}>
                 Supplier Selection
             </Typography>
-            <Stepper alternativeLabel activeStep={0} sx={{ mb: 4 }}>
+            <Stepper alternativeLabel activeStep={0} sx={{ mb: 10 }}>
                 {steps.map((label) => (
                     <Step key={label} sx={{
                         color:'white'
