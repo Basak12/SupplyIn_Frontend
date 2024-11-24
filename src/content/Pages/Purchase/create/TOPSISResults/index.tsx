@@ -144,7 +144,7 @@ const TOPSISResults: FC = () => {
 
     const handlePurchase = () => {
         setOpen(true);
-        postPurchaseResult();
+        //postPurchaseResult();
 
     }
     console.log('bestSupplier', bestSupplier)
