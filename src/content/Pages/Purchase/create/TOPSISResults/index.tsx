@@ -6,6 +6,7 @@ import {
     Step,
     StepLabel,
     Typography,
+    Card,
 } from "@mui/material";
 import { useLocation } from "react-router-dom";
 import Grid from "@mui/material/Grid2";
@@ -188,7 +189,15 @@ const TOPSISResults: FC = () => {
     }
 
     if(suppliersByProduct === null || suppliersByProduct === undefined) {
-        return <div>Loading...</div>;
+        return (
+            <Card sx={{
+                p:2,
+                m:2
+            }}>
+                <Typography>No supplier found for this product</Typography>
+
+            </Card>
+        );
     }
     console.log('suppliers by product', suppliersByProduct);
 
@@ -221,8 +230,14 @@ const TOPSISResults: FC = () => {
                     </Step>
                 ))}
             </Stepper>
-            <Grid container spacing={4} justifyContent='left'>
-                    <BestSupplierCard bestSupplier={bestSupplier} />
+            {suppliersByProduct.length === 0 ? (<Box sx={{
+                p:2,
+                m:2
+            }}>
+                <Typography variant='h5'>No supplier found for {selectedProduct.name}</Typography>
+
+            </Box>) : (<Grid container spacing={4} justifyContent='left'>
+                <BestSupplierCard bestSupplier={bestSupplier} />
                 <Grid size={{xs:12, md:8}}>
                     <RankingTable sortedSuppliers={sortedSuppliers} selectedProduct={selectedProduct} />
                 </Grid>
@@ -247,7 +262,8 @@ const TOPSISResults: FC = () => {
                     Purchase
                 </Button>
 
-            </Grid>
+            </Grid>)
+            }
         </Box>
           {open &&
               <SavePurchaseDialog selectedProduct={selectedProduct} bestSupplier={bestSupplier} open={open} setOpen={setOpen} />
