@@ -63,7 +63,7 @@ const AHPTestComponent: FC<AHPTestComponentProps> = ({comparisonMatrix, openAHPC
     const consistencyRatio = calculateConsistencyRatio(comparisonMatrix, weights);
 
     const handleSaveCriteriaWeight = useCallback(async () => {
-        if (!selectedProduct?.id || !weights?.length) {
+        if (!selectedProduct?.ProID || !weights?.length) {
           console.error('Product or weights are missing');
             return;
         }
@@ -89,12 +89,10 @@ const AHPTestComponent: FC<AHPTestComponentProps> = ({comparisonMatrix, openAHPC
             setOpenAHPComponent(false);
         }
         if (consistencyRatio < 0.1 && consistencyRatio !== 0){
-            //handleSaveCriteriaWeight()
+            handleSaveCriteriaWeight()
             navigate('/purchase/create/topsisResults', {state: {weights: weights, product: selectedProduct}});
         }
-
     }
-
 
     return (
         <>

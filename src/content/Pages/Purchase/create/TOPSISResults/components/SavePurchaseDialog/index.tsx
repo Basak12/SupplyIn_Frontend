@@ -35,7 +35,6 @@ const SavePurchaseDialog: FC<SavePurchaseDialogProps> = ({open,setOpen, selected
         }}>Loading</Typography>;
     }
 
-
     return (
         <>
             <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">

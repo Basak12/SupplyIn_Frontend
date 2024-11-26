@@ -48,15 +48,14 @@ const TOPSISResults: FC = () => {
     const [open, setOpen] = useState<boolean>(false);
     const [suppliersByProduct, setSuppliersByProduct] = useState<Supplier[]>([]);
 
-
     const fetchSuppliersByProductId = useCallback(async () => {
-        if(selectedProduct.id === null || selectedProduct.id === undefined) {
-            console.error('Product or supplier is missing');
+        if(selectedProduct.ProID === null || selectedProduct.ProID === undefined) {
+            console.error('Product is missing');
             return <LoadingWrapper />;
         };
         try {
             const response = await getSuppliersByProduct({
-                productId: selectedProduct.id,
+                productId: selectedProduct.ProID,
                 });
             const processedData = response.map((item: any) => ({
                 id: item.SID,
@@ -68,9 +67,9 @@ const TOPSISResults: FC = () => {
                 safetyReg: item.safetyReg,
                 estDeliveryDate: new Date(item.estDeliveryDate),
                 criteria: [
-                    parseFloat(item.price), // price
-                    item.warranty,           // warranty
-                    item.safetyReg,          // safetyReg
+                    parseFloat(item.price),
+                    item.warranty,
+                    item.safetyReg,
                     item.reliability === "Excellent" ? 10 : item.reliability === "Reliable" ? 8 : 5,
                 ]
             }));
@@ -106,7 +105,7 @@ const TOPSISResults: FC = () => {
             };
 
             // Find ideal and anti-ideal solutions
-            const criteriaTypes: ("cost" | "benefit")[] = ["cost", "cost", "benefit", "benefit", "benefit"]; // Example: Price, Delivery Time -> cost; Others -> benefit
+            const criteriaTypes: ("cost" | "benefit")[] = ["cost", "cost", "benefit", "benefit", "benefit"];
 
             const findIdealSolutions = (weightedMatrix: number[][]): { ideal: number[]; antiIdeal: number[] } => {
                 const ideal = weightedMatrix[0].map((_, colIndex) =>
@@ -166,7 +165,7 @@ const TOPSISResults: FC = () => {
     const bestSupplier = sortedSuppliers[0];
 
     const postPurchaseResults = useCallback(async (bestSupplier: any) => {
-        if(!selectedProduct?.id || !bestSupplier?.supplierId || !bestSupplier?.score) {
+        if(!selectedProduct?.ProID || !bestSupplier?.supplierId || !bestSupplier?.score) {
             console.error('Product or supplier is missing');
             return <LoadingWrapper />;
         };
@@ -199,7 +198,6 @@ const TOPSISResults: FC = () => {
             </Card>
         );
     }
-    console.log('suppliers by product', suppliersByProduct);
 
     return (
       <>

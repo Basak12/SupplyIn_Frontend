@@ -16,48 +16,48 @@ import Grid from '@mui/material/Grid2';
 import { useNavigate } from 'react-router-dom';
 import {ChevronRight} from "@mui/icons-material";
 import {getProducts} from "../../../../api/getProducts";
+import LoadingWrapper from "../../../../components/LoadingWrapper";
+
+type Product= {
+    ProID: number;
+    supplierId: number;
+    description: string;
+    estDeliveryDate: string;
+    name: string;
+    price: string;
+    reliability: string;
+    safetyReg: number;
+    warranty: number;
+}
 
 const CreatePurchasePage: FC = () => {
     const [selectedProduct, setSelectedProduct] = useState<any>(null);
     const navigate = useNavigate();
-    const [products, setProducts] = useState<any>(null);
+    const [products, setProducts] = useState<Product[]>([]);
 
-    //const fetchProducts = useCallback(async () => {
-    //    try {
-    //        const response = await getProducts();
-    //        setProducts(response);
-    //    } catch (error) {
-    //        console.error('Error fetching users:', error);
-    //    }
-    //}, [])
+    const fetchProducts = useCallback(async () => {
+        try {
+            const response = await getProducts();
+            setProducts(response);
+        } catch (error) {
+            console.error('Error fetching users:', error);
+        }
+    }, [])
     ;
 
-    //useEffect(() => {
-    //    fetchProducts();
-    //}, [fetchProducts]);
+    useEffect(() => {
+        fetchProducts();
+    }, [fetchProducts]);
 
     const steps = ['Select Product', 'Adjust Importance', 'View Result and Purchase'];
-
-    const productsForTest = [
-        { name: 'Product A', description: 'Test machine for xyz', id: 1 },
-        { name: 'Product B', description: 'Test machine for abc', id: 2 },
-        { name: 'Product C', description: 'Test machine for mno', id: 3 },
-        { name: 'Product D', description: 'Test machine for pqr', id: 4 },
-        { name: 'Product E', description: 'Test machine for bsk', id: 5 },
-        { name: 'Product F', description: 'Test machine for ayc', id: 6 },
-        { name: 'Product G', description: 'Test machine for zyn', id: 7 },
-        { name: 'Product H', description: 'Test machine for eda', id: 8 },
-    ];
 
     const handleContinue = () => {
         navigate('/purchase/create/adjustImportance', { state: { product: selectedProduct } });
     };
 
-    //if(products === null || products === undefined) {
-    //    return <div>Loading...</div>;
-    //}
-
-    //console.log('products', products);
+    if(products === null || products === undefined) {
+        return <LoadingWrapper/>;
+    }
 
     return (
         <Box
@@ -112,7 +112,7 @@ const CreatePurchasePage: FC = () => {
                 />
             </Box>
             <Grid container spacing={3}>
-                {productsForTest.map((product, index) => (
+                {products.map((product, index) => (
                     <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={index}>
                         <Card
                             onClick={() => setSelectedProduct(product)}

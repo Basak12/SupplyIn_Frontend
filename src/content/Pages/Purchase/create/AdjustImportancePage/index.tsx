@@ -102,9 +102,6 @@ const AdjustImportancePage: FC = () => {
         }
     ]
 
-    //console.log('selectedProduct', selectedProduct)
-    console.log('comparisons', comparisons)
-
     return (
         <>
         <Box
