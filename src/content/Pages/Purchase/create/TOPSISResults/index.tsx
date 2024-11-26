@@ -15,18 +15,27 @@ import SavePurchaseDialog from "./components/SavePurchaseDialog";
 import {postCriteriaWeight} from "../../../../../api/postCriteriaWeight";
 import {postPurchaseResult} from "../../../../../api/postPurchaseResult";
 import product from "../../../Product";
-
-type Supplier = {
-    name: string;
-    criteria: number[];
-    id: number;
-};
+import LoadingWrapper from "../../../../../components/LoadingWrapper";
+import {getSuppliersByProduct} from "../../../../../api/getSupplierByProduct";
 
 type SupplierScore = {
     name: string;
     score: number;
     supplierId: number;
 };
+
+type Supplier = {
+    id: number;
+    name: string;
+    contactInfo: string;
+    price: number;
+    warranty: string;
+    reliability: number;
+    safetyReg: string;
+    estDeliveryDate: Date;
+    criteria: number[];
+};
+
 
 const TOPSISResults: FC = () => {
     const location = useLocation();
@@ -36,16 +45,47 @@ const TOPSISResults: FC = () => {
 
     const [sortedSuppliers, setSortedSuppliers] = useState<SupplierScore[]>([]);
     const [open, setOpen] = useState<boolean>(false);
+    const [suppliersByProduct, setSuppliersByProduct] = useState<Supplier[]>([]);
 
-    const suppliers: Supplier[] = [
-        { name: "Supplier A", criteria: [300, 4, 5, 8, 9], id: 1 },
-        { name: "Supplier B", criteria: [250, 3, 6, 7, 8], id: 2  },
-        { name: "Supplier C", criteria: [400, 5, 3, 9, 10], id: 3 },
-    ];
+
+    const fetchSuppliersByProductId = useCallback(async () => {
+        if(selectedProduct.id === null || selectedProduct.id === undefined) {
+            console.error('Product or supplier is missing');
+            return <LoadingWrapper />;
+        };
+        try {
+            const response = await getSuppliersByProduct({
+                productId: selectedProduct.id,
+                });
+            const processedData = response.map((item: any) => ({
+                id: item.SID,
+                name: item.SupplierName,
+                contactInfo: item.contactInfo,
+                price: parseFloat(item.price),
+                warranty: item.warranty,
+                reliability: item.reliability === "Excellent" ? 10 : item.reliability === "Reliable" ? 8 : 5,
+                safetyReg: item.safetyReg,
+                estDeliveryDate: new Date(item.estDeliveryDate),
+                criteria: [
+                    parseFloat(item.price), // price
+                    item.warranty,           // warranty
+                    item.safetyReg,          // safetyReg
+                    item.reliability === "Excellent" ? 10 : item.reliability === "Reliable" ? 8 : 5,
+                ]
+            }));
+            setSuppliersByProduct(processedData);
+
+        } catch (error) {
+            console.error('Error getting supplier by product:', error);
+        }
+    }, []);
 
     useEffect(() => {
-        if (weights) {
-            // Normalize matrix
+        fetchSuppliersByProductId();
+    }, [fetchSuppliersByProductId]);
+
+    useEffect(() => {
+        if (weights && suppliersByProduct.length > 0) {
             const normalizeMatrix = (suppliers: Supplier[]): number[][] => {
                 const transposed = suppliers[0].criteria.map((_, colIndex) =>
                     suppliers.map(row => row.criteria[colIndex])
@@ -65,7 +105,7 @@ const TOPSISResults: FC = () => {
             };
 
             // Find ideal and anti-ideal solutions
-            const criteriaTypes = ["cost", "cost", "benefit", "benefit", "benefit"]; // Example: Price, Delivery Time -> cost; Others -> benefit
+            const criteriaTypes: ("cost" | "benefit")[] = ["cost", "cost", "benefit", "benefit", "benefit"]; // Example: Price, Delivery Time -> cost; Others -> benefit
 
             const findIdealSolutions = (weightedMatrix: number[][]): { ideal: number[]; antiIdeal: number[] } => {
                 const ideal = weightedMatrix[0].map((_, colIndex) =>
@@ -73,15 +113,13 @@ const TOPSISResults: FC = () => {
                         ? Math.max(...weightedMatrix.map(row => row[colIndex]))
                         : Math.min(...weightedMatrix.map(row => row[colIndex]))
                 );
-            const antiIdeal = weightedMatrix[0].map((_, colIndex) =>
-                criteriaTypes[colIndex] === "benefit"
-                    ? Math.min(...weightedMatrix.map(row => row[colIndex]))
-                    : Math.max(...weightedMatrix.map(row => row[colIndex]))
+                const antiIdeal = weightedMatrix[0].map((_, colIndex) =>
+                    criteriaTypes[colIndex] === "benefit"
+                        ? Math.min(...weightedMatrix.map(row => row[colIndex]))
+                        : Math.max(...weightedMatrix.map(row => row[colIndex]))
                 );
                 return { ideal, antiIdeal };
             };
-
-        
 
             // Calculate distances
             const calculateDistances = (
@@ -105,50 +143,54 @@ const TOPSISResults: FC = () => {
                 );
             };
 
-            const normalizedMatrix = normalizeMatrix(suppliers);
+            const normalizedMatrix = normalizeMatrix(suppliersByProduct);
             const weightedMatrix = weightedNormalizeMatrix(normalizedMatrix, weights);
             const { ideal, antiIdeal } = findIdealSolutions(weightedMatrix);
             const { distancesToIdeal, distancesToAntiIdeal } = calculateDistances(weightedMatrix, ideal, antiIdeal);
             const scores = calculateScores(distancesToIdeal, distancesToAntiIdeal);
 
-            const rankedSuppliers = suppliers.map((supplier, index) => ({
-                name: supplier.name,
-                score: scores[index],
-                supplierId: supplier.id,
-            })).sort((a, b) => b.score - a.score);
+            const rankedSuppliers = suppliersByProduct
+                .map((supplier, index) => ({
+                    name: supplier.name,
+                    score: scores[index],
+                    supplierId: supplier.id,
+                }))
+                .sort((a, b) => b.score - a.score);
 
             setSortedSuppliers(rankedSuppliers);
         }
-    }, [weights]);
+    }, [weights, suppliersByProduct]);
 
 
     const bestSupplier = sortedSuppliers[0];
 
-    const postPurchaseResult = useCallback(async () => {
+    const postPurchaseResults = useCallback(async (bestSupplier: any) => {
         if(!selectedProduct?.id || !bestSupplier?.supplierId || !bestSupplier?.score) {
             console.error('Product or supplier is missing');
-            return;
+            return <LoadingWrapper />;
         };
         try {
-            const response = await postCriteriaWeight({
+            const response = await postPurchaseResult({
                 productId: selectedProduct.id,
                 supplierId: bestSupplier.supplierId,
-                supplierScore: bestSupplier.score,
+                supplierScore: (bestSupplier.score) * 100,
             });
 
-            console.log('Criteria weight saved successfully:', response);
+            console.log('supplier selection saved', response);
         } catch (error) {
-            console.error('Error saving criteria weight:', error);
+            console.error('Error saving supplier selection:', error);
         }
     }, []);
 
-    const handlePurchase = () => {
+    const handlePurchase = (bestSupplier:any) => {
         setOpen(true);
-        //postPurchaseResult();
-
+        postPurchaseResults(bestSupplier).then(r => console.log(r));
     }
-    console.log('bestSupplier', bestSupplier)
-    console.log('selectedProduct', selectedProduct)
+
+    if(suppliersByProduct === null || suppliersByProduct === undefined) {
+        return <div>Loading...</div>;
+    }
+    console.log('suppliers by product', suppliersByProduct);
 
     return (
       <>
@@ -185,7 +227,7 @@ const TOPSISResults: FC = () => {
                     <RankingTable sortedSuppliers={sortedSuppliers} selectedProduct={selectedProduct} />
                 </Grid>
                 <Button
-                    onClick={handlePurchase}
+                    onClick={() => handlePurchase(bestSupplier)}
                     variant="contained"
                     sx={{
                         backgroundColor: "#6c63ff",

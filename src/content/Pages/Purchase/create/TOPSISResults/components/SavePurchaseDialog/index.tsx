@@ -35,8 +35,6 @@ const SavePurchaseDialog: FC<SavePurchaseDialogProps> = ({open,setOpen, selected
         }}>Loading</Typography>;
     }
 
-    console.log('bestSupplier', bestSupplier)
-    console.log('selectedProduct', selectedProduct)
 
     return (
         <>

@@ -4,15 +4,13 @@ import { CircularProgress, Box, Typography } from '@mui/material';
 interface LoadingWrapperProps {
     message?: string;
     size?: number;
-    color?: string;
-    autoHideDelay?: number; // Delay in milliseconds after which the loader hides
-    onHide?: () => void; // Optional callback when the loader hides
+    autoHideDelay?: number;
+    onHide?: () => void;
 }
 
 const LoadingWrapper: FC<LoadingWrapperProps> = ({
                                                      message = 'Loading...',
                                                      size = 40,
-                                                     color = 'primary',
                                                      autoHideDelay = 3000, // Default to 3 seconds
                                                      onHide,
                                                  }) => {
@@ -45,7 +43,7 @@ const LoadingWrapper: FC<LoadingWrapperProps> = ({
             minHeight="200px"
         >
             <CircularProgress size={size} sx={{
-                color: color,
+                color: 'white',
             }} />
             {message && (
                 <Typography variant="body1" sx={{ mt: 2, color: 'white' }}>
