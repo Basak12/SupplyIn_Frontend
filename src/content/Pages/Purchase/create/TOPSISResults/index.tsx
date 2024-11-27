@@ -170,10 +170,12 @@ const TOPSISResults: FC = () => {
             return <LoadingWrapper />;
         };
         try {
+            console.log(selectedProduct, bestSupplier)
+
             const response = await postPurchaseResult({
-                productId: selectedProduct.id,
-                supplierId: bestSupplier.supplierId,
-                supplierScore: (bestSupplier.score) * 100,
+                productId: selectedProduct?.ProID,
+                supplierId: bestSupplier?.supplierId,
+                supplierScore: (bestSupplier?.score) * 100,
             });
 
             console.log('supplier selection saved', response);
@@ -184,7 +186,7 @@ const TOPSISResults: FC = () => {
 
     const handlePurchase = (bestSupplier:any) => {
         setOpen(true);
-        postPurchaseResults(bestSupplier).then(r => console.log(r));
+        postPurchaseResults(bestSupplier)
     }
 
     if(suppliersByProduct === null || suppliersByProduct === undefined) {
