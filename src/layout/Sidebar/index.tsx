@@ -29,6 +29,11 @@ const Sidebar: React.FC = () => {
         setOpenSections((prev) => ({ ...prev, [section]: !prev[section] }));
     };
 
+    const handleLogout = () => {
+        localStorage.removeItem('access_token');
+        navigate('/');
+    }
+
     return (
         <Box
             sx={{
@@ -138,7 +143,7 @@ const Sidebar: React.FC = () => {
                 <Button
                     variant="contained"
                     startIcon={<LogoutIcon />}
-                    onClick={() => {navigate('/')}}
+                    onClick={handleLogout}
                     sx={{
                         backgroundColor: "whitesmoke",
                         color: "#685BFF",

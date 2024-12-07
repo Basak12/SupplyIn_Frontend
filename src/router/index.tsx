@@ -3,8 +3,6 @@ import { Routes, Route, useLocation } from "react-router-dom";
 import Header from "../components/Header";
 import allRouteItems from "./routeItems";
 
-const LoginPage = lazy(() => import('../content/Pages/Auth/LoginCover'));
-
 const AppRouter: React.FC = () => {
     const { pathname } = useLocation();
 
@@ -37,9 +35,7 @@ const AppRouter: React.FC = () => {
 
     return (
         <>
-
             <Routes>
-                <Route path="/" element={<LoginPage />} />
                 {routeElements}
             </Routes>
         </>
