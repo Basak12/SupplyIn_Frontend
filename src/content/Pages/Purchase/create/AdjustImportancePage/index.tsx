@@ -23,7 +23,6 @@ const AdjustImportancePage: FC = () => {
 
     const [comparisonMatrix, setComparisonMatrix] = useState<number[][] | null>(null);
 
-
     const steps = ['Select Product', 'Adjust Importance', 'View Result and Purchase'];
 
     const [comparisons, setComparisons] = useState({

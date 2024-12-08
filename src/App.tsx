@@ -9,7 +9,7 @@ import {AuthProvider} from "./context/AuthContext";
 
 function AppContent() {
     const location = useLocation();
-    const renderSidebar = location.pathname === "/login" || location.pathname === "/register";
+    const renderSidebar = location.pathname === "/login" || location.pathname === "/register" || location.pathname === "/";
 
 
     return (

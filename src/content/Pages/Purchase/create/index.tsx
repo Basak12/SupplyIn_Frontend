@@ -17,18 +17,7 @@ import { useNavigate } from 'react-router-dom';
 import {ChevronRight} from "@mui/icons-material";
 import {getProducts} from "../../../../api/getProducts";
 import LoadingWrapper from "../../../../components/LoadingWrapper";
-
-type Product= {
-    ProID: number;
-    supplierId: number;
-    description: string;
-    estDeliveryDate: string;
-    name: string;
-    price: string;
-    reliability: string;
-    safetyReg: number;
-    warranty: number;
-}
+import {Product} from "../../../../model/product";
 
 const CreatePurchasePage: FC = () => {
     const [selectedProduct, setSelectedProduct] = useState<any>(null);
@@ -57,6 +46,24 @@ const CreatePurchasePage: FC = () => {
 
     if(products === null || products === undefined) {
         return <LoadingWrapper/>;
+    }
+
+    if(products.length === 0) {
+        return (
+            <Box
+                sx={{
+                    color: '#ffffff',
+                    p: 4,
+                }}
+            >
+                <Typography variant="h4" align="left" gutterBottom sx={{marginBottom: "2rem"}}>
+                    Supplier Selection
+                </Typography>
+                <Typography variant="h6" align="center">
+                    No products found
+                </Typography>
+            </Box>
+        );
     }
 
     return (

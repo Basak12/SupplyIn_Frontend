@@ -18,23 +18,12 @@ import {postPurchaseResult} from "../../../../../api/postPurchaseResult";
 import product from "../../../Product";
 import LoadingWrapper from "../../../../../components/LoadingWrapper";
 import {getSuppliersByProduct} from "../../../../../api/getSupplierByProduct";
+import {Supplier} from "../../../../../model/supplier";
 
 type SupplierScore = {
     name: string;
     score: number;
-    supplierId: number;
-};
-
-type Supplier = {
-    id: number;
-    name: string;
-    contactInfo: string;
-    price: number;
-    warranty: string;
-    reliability: number;
-    safetyReg: string;
-    estDeliveryDate: Date;
-    criteria: number[];
+    supplierId: string;
 };
 
 
@@ -44,54 +33,55 @@ const TOPSISResults: FC = () => {
     const selectedProduct = location.state?.product;
     const steps = ["Select Product", "Adjust Importance", "View Result and Purchase"];
 
-    const [sortedSuppliers, setSortedSuppliers] = useState<SupplierScore[]>([]);
+    const [sortedSuppliers, setSortedSuppliers] = useState<any>([]);
     const [open, setOpen] = useState<boolean>(false);
     const [suppliersByProduct, setSuppliersByProduct] = useState<Supplier[]>([]);
 
     const fetchSuppliersByProductId = useCallback(async () => {
-        if(selectedProduct.ProID === null || selectedProduct.ProID === undefined) {
-            console.error('Product is missing');
+        if (!selectedProduct?.id) {
+            console.error("Product is missing");
             return <LoadingWrapper />;
-        };
+        }
+
         try {
-            const response = await getSuppliersByProduct({
-                productId: selectedProduct.ProID,
-                });
+            const response = await getSuppliersByProduct({ productId: selectedProduct.id });
             const processedData = response.map((item: any) => ({
-                id: item.SID,
-                name: item.SupplierName,
+                id: item.supplierId,
+                name: item.supplierName,
                 contactInfo: item.contactInfo,
                 price: parseFloat(item.price),
-                warranty: item.warranty,
-                reliability: item.reliability === "Excellent" ? 10 : item.reliability === "Reliable" ? 8 : 5,
-                safetyReg: item.safetyReg,
-                estDeliveryDate: new Date(item.estDeliveryDate),
+                deliveryTime: parseFloat(item.deliveryTimeScore),
+                warranty: parseFloat(item.warrantyScore),
+                compliance: parseFloat(item.complianceScore),
+                reliability: parseFloat(item.reliabilityScore),
                 criteria: [
                     parseFloat(item.price),
-                    item.warranty,
-                    item.safetyReg,
-                    item.reliability === "Excellent" ? 10 : item.reliability === "Reliable" ? 8 : 5,
-                ]
+                    parseFloat(item.deliveryTimeScore),
+                    parseFloat(item.warrantyScore),
+                    parseFloat(item.complianceScore),
+                    parseFloat(item.reliabilityScore),
+                ],
             }));
             setSuppliersByProduct(processedData);
-
         } catch (error) {
-            console.error('Error getting supplier by product:', error);
+            console.error("Error getting suppliers by product:", error);
         }
-    }, []);
+    }, [selectedProduct]);
+
 
     useEffect(() => {
         fetchSuppliersByProductId();
     }, [fetchSuppliersByProductId]);
 
+    //todo fix this useEffect
     useEffect(() => {
         if (weights && suppliersByProduct.length > 0) {
             const normalizeMatrix = (suppliers: Supplier[]): number[][] => {
-                const transposed = suppliers[0].criteria.map((_, colIndex) =>
-                    suppliers.map(row => row.criteria[colIndex])
+                const transposed = suppliers[0].scores.map((_, colIndex) =>
+                    suppliers.map(row => row.scores[colIndex])
                 );
                 return suppliers.map(supplier =>
-                    supplier.criteria.map((value, index) =>
+                    supplier.scores.map((value, index) =>
                         value / Math.sqrt(transposed[index].reduce((sum, val) => sum + val ** 2, 0))
                     )
                 );
@@ -121,7 +111,6 @@ const TOPSISResults: FC = () => {
                 return { ideal, antiIdeal };
             };
 
-            // Calculate distances
             const calculateDistances = (
                 weightedMatrix: number[][],
                 ideal: number[],
@@ -136,7 +125,6 @@ const TOPSISResults: FC = () => {
                 return { distancesToIdeal, distancesToAntiIdeal };
             };
 
-            // Calculate scores
             const calculateScores = (distancesToIdeal: number[], distancesToAntiIdeal: number[]): number[] => {
                 return distancesToAntiIdeal.map((distance, index) =>
                     distance / (distance + distancesToIdeal[index])
@@ -160,6 +148,7 @@ const TOPSISResults: FC = () => {
             setSortedSuppliers(rankedSuppliers);
         }
     }, [weights, suppliersByProduct]);
+
 
 
     const bestSupplier = sortedSuppliers[0];
@@ -196,7 +185,6 @@ const TOPSISResults: FC = () => {
                 m:2
             }}>
                 <Typography>No supplier found for this product</Typography>
-
             </Card>
         );
     }
@@ -263,7 +251,7 @@ const TOPSISResults: FC = () => {
                 </Button>
 
             </Grid>)
-            }
+            }a
         </Box>
           {open &&
               <SavePurchaseDialog selectedProduct={selectedProduct} bestSupplier={bestSupplier} open={open} setOpen={setOpen} />

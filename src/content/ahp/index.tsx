@@ -5,7 +5,6 @@ import SentimentSatisfiedAltIcon from '@mui/icons-material/SentimentSatisfiedAlt
 import {useNavigate} from "react-router-dom";
 import {postCriteriaWeight} from "../../api/postCriteriaWeight";
 
-
 type Matrix = number[][];
 interface AHPTestComponentProps {
     comparisonMatrix: Matrix | null;
@@ -63,18 +62,19 @@ const AHPTestComponent: FC<AHPTestComponentProps> = ({comparisonMatrix, openAHPC
     const consistencyRatio = calculateConsistencyRatio(comparisonMatrix, weights);
 
     const handleSaveCriteriaWeight = useCallback(async () => {
-        if (!selectedProduct?.ProID || !weights?.length) {
+        if (!selectedProduct?.id || !weights?.length) {
           console.error('Product or weights are missing');
             return;
         }
         try {
+            console.log('Selected Product:', selectedProduct)
             const response = await postCriteriaWeight({
-                ProID: 1,
-                ReliabilityScore: weights[0],
-                PriceScore: weights[1],
-                DeliveryTimeScore: weights[2],
-                WarrantyScore: weights[3],
-                ComplianceScore: weights[4],
+                productId: selectedProduct.id,
+                reliabilityScore: weights[0],
+                priceScore: weights[1],
+                deliveryTimeScore: weights[2],
+                warrantyScore: weights[3],
+                complianceScore: weights[4],
             });
 
             console.log('Criteria weight saved successfully:', response);
