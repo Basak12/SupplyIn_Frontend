@@ -26,7 +26,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const token = localStorage.getItem("access_token");
         console.log('1111', token)
         if (token) {
-            fetch("/api/auth/verify", {
+            fetch(`${process.env.REACT_APP_BACKEND_URL}/auth/verify`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -59,7 +59,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             email: email,
         })
 /*
-        fetch("/api/auth/verify", {
+        fetch(`${process.env.REACT_APP_BACKEND_URL}/auth/verify`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
