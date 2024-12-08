@@ -18,10 +18,12 @@ import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import sidebarItems from "./sidebarItems";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import LogoutIcon from "@mui/icons-material/Logout";
+import {useAuth} from "../../context/AuthContext";
 
 const Sidebar: React.FC = () => {
     const location = useLocation();
     const navigate = useNavigate();
+    const { user } = useAuth();
 
     const [openSections, setOpenSections] = useState<{ [key: string]: boolean }>({});
 
@@ -31,7 +33,7 @@ const Sidebar: React.FC = () => {
 
     const handleLogout = () => {
         localStorage.removeItem('access_token');
-        navigate('/');
+        navigate('/login');
     }
 
     return (
@@ -62,7 +64,7 @@ const Sidebar: React.FC = () => {
                     Admin
                 </Typography>
                 <Typography fontSize={16} fontWeight="lighter" sx={{ color: "whitesmoke" }}>
-                    Ayca Kurkcu
+                    {user?.name} {user?.surname}
                 </Typography>
             </Box>
             <Divider sx={{ backgroundColor: "#8e8e8f", mt: 2, mb: 2 }} />

@@ -6,7 +6,6 @@ import axios from 'axios';
 const RegisterPage: FC = () => {
     const navigate = useNavigate();
 
-    // State'ler
     const [name, setName] = useState<string>('');
     const [nameError, setNameError] = useState<boolean>(false);
 

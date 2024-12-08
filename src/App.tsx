@@ -5,14 +5,16 @@ import Sidebar from "./layout/Sidebar";
 import AppRouter from "./router";
 import { NavigationProvider } from "./context/Navigation";
 import { Box } from "@mui/material";
+import {AuthProvider} from "./context/AuthContext";
 
 function AppContent() {
     const location = useLocation();
-    const isLoginPage = location.pathname === "/login" || location.pathname === "/register";
+    const renderSidebar = location.pathname === "/login" || location.pathname === "/register";
+
 
     return (
         <Box display="flex" height="100vh">
-            {!isLoginPage && (
+            {!renderSidebar && (
                 <Box
                     sx={{
                         flexShrink: 0,
@@ -37,28 +39,15 @@ function AppContent() {
 }
 
 function App() {
-    const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
-
-    useEffect(() => {
-        const token = localStorage.getItem("access_token");
-        if (token) {
-            setIsLoggedIn(true);
-        } else {
-            setIsLoggedIn(false);
-        }
-    }, []);
-
-    if (isLoggedIn === null) {
-        return <div>Loading...</div>;
-    }
-
 
     return (
         <Router>
             <Suspense fallback={<div>Loading...</div>}>
-                <NavigationProvider>
-                    {isLoggedIn ? <AppContent /> : <Navigate to="/login" replace/>}
-                </NavigationProvider>
+                <AuthProvider>
+                    <NavigationProvider>
+                       <AppContent />
+                    </NavigationProvider>
+                </AuthProvider>
             </Suspense>
         </Router>
     );

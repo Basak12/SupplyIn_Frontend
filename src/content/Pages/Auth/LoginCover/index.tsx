@@ -1,14 +1,17 @@
 import React, { FC, useState } from 'react';
 import { CardMedia, Typography, Box, TextField, Button, Paper } from '@mui/material';
 import Grid from '@mui/material/Grid2';
-import { useNavigate } from 'react-router-dom';
+import {Navigate, useNavigate} from 'react-router-dom';
 import axios from 'axios';
+import {useAuth} from "../../../../context/AuthContext";
 
 const LoginPage: FC = () => {
     const navigate = useNavigate();
+    const { login } = useAuth();
     const [email, setEmail] = useState('john.doe@example.com');
     const [password, setPassword] = useState('123456');
     const [error, setError] = useState<string | null>(null);
+
 
     const handleLogin = async () => {
         try {
@@ -18,11 +21,14 @@ const LoginPage: FC = () => {
             });
 
             console.log('response', response);
-            const { access_token } = response.data;
-            localStorage.setItem('access_token', access_token);
-            navigate('/dashboard');
-            //todo add custom error handler
+            const { access_token, user } = response.data;
+            console.log('user', user)
+            if (!access_token) {
+                throw new Error('Token missing in response');
+            }
+            login(access_token, user.name, user.surname, user.email);
         } catch (err) {
+            console.error('Login error:', err);
             setError('Invalid email or password. Please try again.');
         }
     };

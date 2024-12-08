@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useState } from 'react';
 import {Card, Typography, Box, TableContainer, Paper, Table, TableHead, TableCell, TableRow, TableBody, Fab} from "@mui/material";
 import Grid from "@mui/material/Grid2";
-import {useLocation} from "react-router-dom";
+import {Navigate, useLocation} from "react-router-dom";
 
 interface DashboardPageProps {}
 

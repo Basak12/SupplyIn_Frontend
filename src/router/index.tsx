@@ -1,12 +1,54 @@
-import React, { lazy, Suspense } from "react";
-import { Routes, Route, useLocation } from "react-router-dom";
+import React, {lazy, Suspense, useEffect, useState} from "react";
+import {Routes, Route, useLocation, Navigate} from "react-router-dom";
 import Header from "../components/Header";
 import allRouteItems from "./routeItems";
+import LoginPage from "../content/Pages/Auth/LoginCover";
+import RegisterPage from "../content/Pages/Auth/RegisterPage";
 
 const AppRouter: React.FC = () => {
     const { pathname } = useLocation();
+    const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
 
-    const pathnameConverter = (pathname: string) => {
+    useEffect(() => {
+        const token = localStorage.getItem("access_token");
+        if (token) {
+            setIsLoggedIn(true);
+        } else {
+            setIsLoggedIn(false);
+        }
+    }, []);
+
+    if (isLoggedIn === null) {
+        return <div>Loading...</div>;
+    }
+    if(isLoggedIn === false) {
+        return (
+            <Routes>
+                <Route path="login" element={<LoginPage />} />
+                <Route path="register" element={<RegisterPage />} />
+            </Routes>
+        )
+    }
+
+    const routeElements = Object.values(allRouteItems).flat().map((route) => (
+        <Route key={route.path} path={route.path} element={route.element} />
+    ));
+
+//todo login, logout yapınca router elementlerini bulamıyor
+
+    return (
+        <>
+            <Routes>
+                {isLoggedIn === true && routeElements}
+            </Routes>
+        </>
+    );
+};
+
+export default AppRouter;
+/*
+ {pathname === '/' ? null : <Header pageName={pathnameConverter(pathname)} />}
+   const pathnameConverter = (pathname: string) => {
         switch (pathname) {
             case '/dashboard':
                 return 'Dashboard';
@@ -28,21 +70,4 @@ const AppRouter: React.FC = () => {
                 return 'Unknown Page';
         }
     };
-
-    const routeElements = Object.values(allRouteItems).flat().map((route) => (
-        <Route key={route.path} path={route.path} element={route.element} />
-    ));
-
-    return (
-        <>
-            <Routes>
-                {routeElements}
-            </Routes>
-        </>
-    );
-};
-
-export default AppRouter;
-/*
- {pathname === '/' ? null : <Header pageName={pathnameConverter(pathname)} />}
  */
