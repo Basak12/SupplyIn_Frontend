@@ -59,7 +59,7 @@ const CreatePurchasePage: FC = () => {
                 <Typography variant="h4" align="left" gutterBottom sx={{marginBottom: "2rem"}}>
                     Supplier Selection
                 </Typography>
-                <Typography variant="h6" align="center">
+                <Typography variant="h6" align="center" sx={{marginBottom: "2rem"}}>
                     No products found
                 </Typography>
             </Box>

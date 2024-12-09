@@ -67,7 +67,6 @@ const AHPTestComponent: FC<AHPTestComponentProps> = ({comparisonMatrix, openAHPC
             return;
         }
         try {
-            console.log('Selected Product:', selectedProduct)
             const response = await postCriteriaWeight({
                 productId: selectedProduct.id,
                 reliabilityScore: weights[0],
@@ -76,8 +75,6 @@ const AHPTestComponent: FC<AHPTestComponentProps> = ({comparisonMatrix, openAHPC
                 warrantyScore: weights[3],
                 complianceScore: weights[4],
             });
-
-            console.log('Criteria weight saved successfully:', response);
         } catch (error) {
             console.error('Error saving criteria weight:', error);
         }

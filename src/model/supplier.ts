@@ -6,5 +6,6 @@ export interface Supplier {
     name: string;
     contactInfo: string;
     purchases: Purchase[];
+    criteriaWeights: number[];
 
 }

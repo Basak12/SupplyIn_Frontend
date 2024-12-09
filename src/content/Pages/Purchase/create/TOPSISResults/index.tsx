@@ -13,18 +13,10 @@ import Grid from "@mui/material/Grid2";
 import BestSupplierCard from "./components/BestSupplierCard";
 import RankingTable from "./components/RankingTable";
 import SavePurchaseDialog from "./components/SavePurchaseDialog";
-import {postCriteriaWeight} from "../../../../../api/postCriteriaWeight";
 import {postPurchaseResult} from "../../../../../api/postPurchaseResult";
-import product from "../../../Product";
 import LoadingWrapper from "../../../../../components/LoadingWrapper";
 import {getSuppliersByProduct} from "../../../../../api/getSupplierByProduct";
 import {Supplier} from "../../../../../model/supplier";
-
-type SupplierScore = {
-    name: string;
-    score: number;
-    supplierId: string;
-};
 
 
 const TOPSISResults: FC = () => {
@@ -35,7 +27,7 @@ const TOPSISResults: FC = () => {
 
     const [sortedSuppliers, setSortedSuppliers] = useState<any>([]);
     const [open, setOpen] = useState<boolean>(false);
-    const [suppliersByProduct, setSuppliersByProduct] = useState<Supplier[]>([]);
+    const [suppliersByProduct, setSuppliersByProduct] = useState<any>([]);
 
     const fetchSuppliersByProductId = useCallback(async () => {
         if (!selectedProduct?.id) {
@@ -44,17 +36,18 @@ const TOPSISResults: FC = () => {
         }
 
         try {
-            const response = await getSuppliersByProduct({ productId: selectedProduct.id });
+            const response = await getSuppliersByProduct(selectedProduct.id);
+            console.log("response", response);
             const processedData = response.map((item: any) => ({
-                id: item.supplierId,
-                name: item.supplierName,
+                id: item.id,
+                name: item.name,
                 contactInfo: item.contactInfo,
                 price: parseFloat(item.price),
-                deliveryTime: parseFloat(item.deliveryTimeScore),
-                warranty: parseFloat(item.warrantyScore),
-                compliance: parseFloat(item.complianceScore),
+                deliveryTime: parseFloat(item.deliveryTime),
+                warranty: parseFloat(item.warranty),
+                compliance: parseFloat(item.compliance),
                 reliability: parseFloat(item.reliabilityScore),
-                criteria: [
+                criteriaWeights: [
                     parseFloat(item.price),
                     parseFloat(item.deliveryTimeScore),
                     parseFloat(item.warrantyScore),
@@ -62,6 +55,8 @@ const TOPSISResults: FC = () => {
                     parseFloat(item.reliabilityScore),
                 ],
             }));
+            console.log("processedData", processedData);
+
             setSuppliersByProduct(processedData);
         } catch (error) {
             console.error("Error getting suppliers by product:", error);
@@ -77,11 +72,11 @@ const TOPSISResults: FC = () => {
     useEffect(() => {
         if (weights && suppliersByProduct.length > 0) {
             const normalizeMatrix = (suppliers: Supplier[]): number[][] => {
-                const transposed = suppliers[0].scores.map((_, colIndex) =>
-                    suppliers.map(row => row.scores[colIndex])
+                const transposed = suppliers[0].criteriaWeights.map((_, colIndex) =>
+                    suppliers.map(row => row.criteriaWeights[colIndex])
                 );
                 return suppliers.map(supplier =>
-                    supplier.scores.map((value, index) =>
+                    supplier.criteriaWeights.map((value, index) =>
                         value / Math.sqrt(transposed[index].reduce((sum, val) => sum + val ** 2, 0))
                     )
                 );
@@ -137,18 +132,15 @@ const TOPSISResults: FC = () => {
             const { distancesToIdeal, distancesToAntiIdeal } = calculateDistances(weightedMatrix, ideal, antiIdeal);
             const scores = calculateScores(distancesToIdeal, distancesToAntiIdeal);
 
-            const rankedSuppliers = suppliersByProduct
-                .map((supplier, index) => ({
-                    name: supplier.name,
-                    score: scores[index],
-                    supplierId: supplier.id,
-                }))
-                .sort((a, b) => b.score - a.score);
+            const rankedSuppliers = suppliersByProduct.map((supplier:any, index:any) => ({
+                name: supplier.name,
+                score: scores[index],
+                supplierId: supplier.id,
+            })).sort((a:any, b:any) => b.score - a.score);
 
             setSortedSuppliers(rankedSuppliers);
         }
     }, [weights, suppliersByProduct]);
-
 
 
     const bestSupplier = sortedSuppliers[0];
@@ -249,9 +241,8 @@ const TOPSISResults: FC = () => {
                 >
                     Purchase
                 </Button>
-
             </Grid>)
-            }a
+            }
         </Box>
           {open &&
               <SavePurchaseDialog selectedProduct={selectedProduct} bestSupplier={bestSupplier} open={open} setOpen={setOpen} />
