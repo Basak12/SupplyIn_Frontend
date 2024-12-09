@@ -71,7 +71,7 @@ const RankingTable: FC<RankingTableProps> = ({sortedSuppliers, selectedProduct})
                                     {index + 1}
                                 </TableCell>
                                 <TableCell sx={{ color: "white" }} align="center">
-                                    {supplier.score.toFixed(3)}
+                                    {supplier.score.toFixed(1)}
                                 </TableCell>
                             </TableRow>
                         ))}

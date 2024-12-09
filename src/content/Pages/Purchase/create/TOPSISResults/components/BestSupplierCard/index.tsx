@@ -31,7 +31,7 @@ const BestSupplierCard: FC<BestSupplierCardProps> = ({bestSupplier}) => {
                         {bestSupplier.name}
                     </Typography>
                     <Typography variant="body1" color="#b0b0b0" sx={{ mt: 1 }}>
-                        {bestSupplier.score.toFixed(3)}
+                        {bestSupplier.score.toFixed(1)}
                     </Typography>
 
                 </Card>
