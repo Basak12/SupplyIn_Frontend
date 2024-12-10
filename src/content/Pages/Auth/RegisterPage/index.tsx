@@ -2,6 +2,7 @@ import React, { FC, useState } from 'react';
 import { CardMedia, Typography, Box, TextField, Button, Paper } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import API_URL from "../../../../config";
 
 const RegisterPage: FC = () => {
     const navigate = useNavigate();
@@ -35,7 +36,7 @@ const RegisterPage: FC = () => {
         }
 
         try {
-            const response = await axios.post('http://localhost:3000/auth/register', {
+            const response = await axios.post(`${API_URL}/auth/register`, {
                 name,
                 surname,
                 email,

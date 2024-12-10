@@ -4,6 +4,7 @@ import Grid from '@mui/material/Grid2';
 import {Navigate, useNavigate} from 'react-router-dom';
 import axios from 'axios';
 import {useAuth} from "../../../../context/AuthContext";
+import API_URL from "../../../../config";
 
 const LoginPage: FC = () => {
     const navigate = useNavigate();
@@ -15,7 +16,7 @@ const LoginPage: FC = () => {
 
     const handleLogin = async () => {
         try {
-            const response = await axios.post('http://localhost:5050/auth/login', {
+            const response = await axios.post(`${API_URL}/auth/login`, {
                 email,
                 password,
             });
