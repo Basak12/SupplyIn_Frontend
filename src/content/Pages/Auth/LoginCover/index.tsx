@@ -25,7 +25,7 @@ const LoginPage: FC = () => {
                 throw new Error('Token missing in response');
             }
             localStorage.setItem("access_token", access_token);
-            login(access_token, user.name, user.surname, user.email);
+            login(access_token, user.name, user.surname, user.email, user.id);
         } catch (err) {
             setError('Invalid email or password. Please try again.');
         }

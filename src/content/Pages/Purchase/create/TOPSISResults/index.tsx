@@ -17,10 +17,11 @@ import { postPurchaseResult } from "../../../../../api/postPurchaseResult";
 import LoadingWrapper from "../../../../../components/LoadingWrapper";
 import { getSuppliersByProduct } from "../../../../../api/getSupplierByProduct";
 import { Supplier } from "../../../../../model/supplier";
-
+import {useAuth} from "../../../../../context/AuthContext";
 
 const TOPSISResults: FC = () => {
     const location = useLocation();
+    const { user } = useAuth();
     const weights = location.state?.weights;
     const selectedProduct = location.state?.product;
     const steps = ["Select Product", "Adjust Importance", "View Result and Purchase"];
@@ -30,22 +31,20 @@ const TOPSISResults: FC = () => {
     const [suppliersByProduct, setSuppliersByProduct] = useState<any>([]);
 
     const fetchSuppliersByProductId = useCallback(async () => {
-        if (!selectedProduct?.id) {
+        if (!selectedProduct?.id || !selectedProduct?.name) {
             console.error("Product is missing");
             return <LoadingWrapper />;
         }
-
         try {
-            const response = await getSuppliersByProduct(selectedProduct.id);
-            console.log("response", response);
+            const response = await getSuppliersByProduct(selectedProduct.name);
             const processedData = response.map((item: any) => ({
                 id: item.supplierid,
                 name: item.suppliername,
                 contactInfo: item.contactinfo,
                 price: parseFloat(item.price),
                 deliveryTime: parseFloat(item.deliverytimeweeks),
-                warranty: parseFloat(item.warranty.replace(' Years', '')), // warranty'yi sayıya çeviriyoruz
-                compliance: parseFloat(item.compliance.replace('%', '')), // compliance'ı yüzdeyi sayıya çeviriyoruz
+                warranty: parseFloat(item.warranty.replace(' Years', '')),
+                compliance: parseFloat(item.compliance.replace('%', '')),
                 reliability: parseFloat(item.reliability),
                 criteriaWeights: [
                     parseFloat(item.price),
@@ -55,9 +54,7 @@ const TOPSISResults: FC = () => {
                     parseFloat(item.reliability),
                 ],
             }));
-
-            console.log("processedData", processedData);
-            setSuppliersByProduct(processedData);  // State'e set ediyoruz
+            setSuppliersByProduct(processedData);
         } catch (error) {
             console.error("Error getting suppliers by product:", error);
         }
@@ -158,7 +155,6 @@ const TOPSISResults: FC = () => {
             const scores = calculateScores(distancesToIdeal, distancesToAntiIdeal);
             const scoresOutOf100 = scores.map(score => score * 100);
 
-
             const rankedSuppliers = suppliersByProduct.map((supplier: any, index: number) => ({
                 name: supplier.name,
                 score: scoresOutOf100[index],
@@ -176,13 +172,17 @@ const TOPSISResults: FC = () => {
             console.error('Product or supplier is missing');
             return;
         }
+        if(!user?.id) {
+            console.log('User is missing');
+            return;
+        }
         try {
             console.log(selectedProduct, bestSupplier);
-
             const response = await postPurchaseResult({
+                userId: user.id,
                 productId: selectedProduct.id,
                 supplierId: bestSupplier.supplierId,
-                supplierScore: (bestSupplier.score) * 100,
+                supplierScore: (bestSupplier.score),
             });
 
             console.log('Supplier selection saved', response);
@@ -235,7 +235,6 @@ const TOPSISResults: FC = () => {
                             color: "white",
                             textTransform: "none",
                             fontSize: "1.2rem",
-                            ml: 3,
                             paddingY: 2,
                             paddingX: 12,
                             width: "20%",

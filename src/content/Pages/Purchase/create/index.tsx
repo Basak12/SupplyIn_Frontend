@@ -66,6 +66,14 @@ const CreatePurchasePage: FC = () => {
         );
     }
 
+    const filteredProducts = products.reduce((acc, product) => {
+        if (!acc.find(item => item.name === product.name)) {
+            acc.push(product);
+        }
+        return acc;
+    }, [] as { id: string, name: string, description: string }[]);
+
+
     return (
         <Box
             sx={{
@@ -119,7 +127,7 @@ const CreatePurchasePage: FC = () => {
                 />
             </Box>
             <Grid container spacing={3}>
-                {products.map((product, index) => (
+                {filteredProducts.map((product, index) => (
                     <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={index}>
                         <Card
                             onClick={() => setSelectedProduct(product)}

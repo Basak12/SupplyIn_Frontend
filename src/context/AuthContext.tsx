@@ -2,7 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 interface User {
-    id?: string;
+    id: string;
     name: string;
     surname: string;
     email: string;
@@ -11,7 +11,7 @@ interface User {
 interface AuthContextProps {
     isLoggedIn: boolean;
     user: User | null;
-    login: (access_token: string, name: string, surname:string, email:string) => void;
+    login: (access_token: string, name: string, surname:string, email:string, id:string) => void;
     logout: () => void;
 }
 
@@ -45,9 +45,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
     }, []);
 
-    const login = (access_token: string, name: string, surname: string, email: string) => {
+    const login = (access_token: string, name: string, surname: string, email: string, id:string) => {
         //console.log('access_token', access_token);
-        setUser({ name, surname, email });
+        setUser({ name, surname, email, id });
         setIsLoggedIn(true);
         navigate('/dashboard');
     };
