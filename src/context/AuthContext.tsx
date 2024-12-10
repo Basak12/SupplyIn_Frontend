@@ -11,7 +11,7 @@ interface User {
 interface AuthContextProps {
     isLoggedIn: boolean;
     user: User | null;
-    login: (token: string, name: string, surname:string, email:string) => void;
+    login: (access_token: string, name: string, surname:string, email:string) => void;
     logout: () => void;
 }
 
@@ -23,12 +23,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const navigate = useNavigate();
 
     useEffect(() => {
-        const token = localStorage.getItem("access_token");
-        console.log('1111', token)
-        if (token) {
+        const access_token = localStorage.getItem("access_token");
+        if (access_token) {
             fetch(`${process.env.REACT_APP_BACKEND_URL}/auth/verify`, {
                 headers: {
-                    Authorization: `Bearer ${token}`,
+                    Authorization: `Bearer ${access_token}`,
                 },
             })
                 .then((res) => res.json())
@@ -46,33 +45,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
     }, []);
 
-    const login = (token: string, name: string, surname:string, email:string) => {
-        localStorage.setItem("access_token", token);
-        console.log('login', token)
-        // TODO: Implement token verification endpoint in backend
-        // todo her refresh yaptığımda logout yapıyor
+    const login = (access_token: string, name: string, surname: string, email: string) => {
+        //console.log('access_token', access_token);
+        setUser({ name, surname, email });
         setIsLoggedIn(true);
-        navigate("/dashboard");
-        setUser({
-            name: name,
-            surname: surname,
-            email: email,
-        })
-/*
-        fetch(`${process.env.REACT_APP_BACKEND_URL}/auth/verify`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        })
-            .then((res) => res.json())
-            .then((data) => {
-                if (data.success) {
-                    setUser(data.user);
-                    setIsLoggedIn(true);
-                    navigate("/dashboard");
-                }
-            });
- */
+        navigate('/dashboard');
     };
 
     const logout = () => {

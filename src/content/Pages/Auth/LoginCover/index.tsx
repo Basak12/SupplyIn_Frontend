@@ -19,16 +19,13 @@ const LoginPage: FC = () => {
                 email,
                 password,
             });
-
-            console.log('response', response);
             const { access_token, user } = response.data;
-            console.log('user', user)
             if (!access_token) {
                 throw new Error('Token missing in response');
             }
+            localStorage.setItem("access_token", access_token);
             login(access_token, user.name, user.surname, user.email);
         } catch (err) {
-            console.error('Login error:', err);
             setError('Invalid email or password. Please try again.');
         }
     };
