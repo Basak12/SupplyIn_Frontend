@@ -30,6 +30,8 @@ const TOPSISResults: FC = () => {
     const [open, setOpen] = useState<boolean>(false);
     const [suppliersByProduct, setSuppliersByProduct] = useState<any>([]);
 
+    // todo add error handling for null, undefineqd, empty values for suppliers
+
     const fetchSuppliersByProductId = useCallback(async () => {
         if (!selectedProduct?.id || !selectedProduct?.name) {
             console.error("Product is missing");

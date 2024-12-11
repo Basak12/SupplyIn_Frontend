@@ -24,7 +24,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     useEffect(() => {
         const access_token = localStorage.getItem("access_token");
+        console.log('111111', access_token);
         if (access_token) {
+            console.log('22222', access_token)
             fetch(`${process.env.REACT_APP_BACKEND_URL}/auth/verify`, {
                 headers: {
                     Authorization: `Bearer ${access_token}`,
@@ -49,7 +51,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         //console.log('access_token', access_token);
         setUser({ name, surname, email, id });
         setIsLoggedIn(true);
-        navigate('/dashboard');
+        navigate("/dashboard");
     };
 
     const logout = () => {
