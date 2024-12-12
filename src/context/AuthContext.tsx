@@ -6,6 +6,7 @@ interface User {
     name: string;
     surname: string;
     email: string;
+    isActive: boolean;
 }
 
 interface AuthContextProps {
@@ -47,7 +48,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }, []);
 
     const login = (access_token: string, name: string, surname: string, email: string, id:string) => {
-        setUser({ name, surname, email, id });
+        setUser({ name, surname, email, id, isActive: true });
         setIsLoggedIn(true);
         navigate("/dashboard");
     };
