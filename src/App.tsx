@@ -39,6 +39,7 @@ function AppContent() {
 }
 
 function App() {
+    //todo add loading wrapper to suspense
 
     return (
         <Router>

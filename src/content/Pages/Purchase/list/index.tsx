@@ -55,8 +55,6 @@ const PurchasePage: FC<PurchasePageProps> = ({}) => {
         );
     }
 
-    console.log('purchases', purchases);
-
     return (
         <Grid
             container
