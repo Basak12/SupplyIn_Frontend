@@ -1,10 +1,11 @@
 import React, { FC, useState } from 'react';
-import { CardMedia, Typography, Box, TextField, Button, Paper } from '@mui/material';
+import { CardMedia, Typography, Box, TextField, Button, Paper, CircularProgress } from '@mui/material';
 import Grid from '@mui/material/Grid2';
-import {Navigate, useNavigate} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import {useAuth} from "../../../../context/AuthContext";
+import { useAuth } from "../../../../context/AuthContext";
 import API_URL from "../../../../config";
+import LoadingWrapper from "../../../../components/LoadingWrapper";
 
 const LoginPage: FC = () => {
     const navigate = useNavigate();
@@ -12,9 +13,9 @@ const LoginPage: FC = () => {
     const [email, setEmail] = useState('john.doe@example.com');
     const [password, setPassword] = useState('123456');
     const [error, setError] = useState<string | null>(null);
-
-
+    const [loading, setLoading] = useState(false);
     const handleLogin = async () => {
+        setLoading(true);
         try {
             const response = await axios.post(`${API_URL}/auth/login`, {
                 email,
@@ -26,8 +27,10 @@ const LoginPage: FC = () => {
             }
             localStorage.setItem("access_token", access_token);
             login(access_token, user.name, user.surname, user.email, user.id);
+            setLoading(false);
         } catch (err) {
             setError('Invalid email or password. Please try again.');
+            setLoading(false);
         }
     };
 
@@ -88,8 +91,13 @@ const LoginPage: FC = () => {
                             variant="contained"
                             fullWidth
                             sx={{ backgroundColor: '#2E2E48', color: '#fff' }}
+                            disabled={loading}
                         >
-                            Log in
+                            {loading ? (
+                                <LoadingWrapper message='' size={24}/>
+                            ) : (
+                                'Log in'
+                            )}
                         </Button>
                         <Typography variant="body2" sx={{ mt: 2 }}>
                             Don't have an account? <a href="/register">Register</a>

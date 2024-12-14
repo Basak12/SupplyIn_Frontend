@@ -6,6 +6,7 @@ interface LoadingWrapperProps {
     size?: number;
     autoHideDelay?: number;
     onHide?: () => void;
+    height?: string;
 }
 
 const LoadingWrapper: FC<LoadingWrapperProps> = ({
@@ -13,6 +14,7 @@ const LoadingWrapper: FC<LoadingWrapperProps> = ({
                                                      size = 40,
                                                      autoHideDelay = 3000, // Default to 3 seconds
                                                      onHide,
+                                                     height = '30px',
                                                  }) => {
     const [isVisible, setIsVisible] = useState(true);
 
@@ -39,8 +41,7 @@ const LoadingWrapper: FC<LoadingWrapperProps> = ({
             flexDirection="column"
             alignItems="center"
             justifyContent="center"
-            height="100%"
-            minHeight="200px"
+            height={height}
         >
             <CircularProgress size={size} sx={{
                 color: 'white',

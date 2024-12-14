@@ -6,6 +6,7 @@ import AppRouter from "./router";
 import { NavigationProvider } from "./context/Navigation";
 import { Box } from "@mui/material";
 import {AuthProvider} from "./context/AuthContext";
+import LoadingWrapper from "./components/LoadingWrapper";
 
 function AppContent() {
     const location = useLocation();
@@ -39,11 +40,9 @@ function AppContent() {
 }
 
 function App() {
-    //todo add loading wrapper to suspense
-
     return (
         <Router>
-            <Suspense fallback={<div>Loading...</div>}>
+            <Suspense fallback={<LoadingWrapper/> }>
                 <AuthProvider>
                     <NavigationProvider>
                        <AppContent />

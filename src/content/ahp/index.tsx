@@ -126,13 +126,6 @@ const AHPTestComponent: FC<AHPTestComponentProps> = ({comparisonMatrix, openAHPC
                             <Typography variant="body1">
                                 Consistency Ratio: {consistencyRatio.toFixed(2)}
                             </Typography>
-                            <Box mt={1}>
-                                {weights.map((weight, idx) => (
-                                    <Typography key={idx} variant="body1">
-                                        {weight.toFixed(2)}
-                                    </Typography>
-                                ))}
-                            </Box>
                         </>
                     )}
                     {(consistencyRatio === 0) &&  (
@@ -203,14 +196,3 @@ const AHPTestComponent: FC<AHPTestComponentProps> = ({comparisonMatrix, openAHPC
 };
 
 export default AHPTestComponent;
-/*
- {consistencyRatio < 0.1 && (
-                <LoadingWrapper
-                    message="Calculating..."
-                    size={50}
-                    autoHideDelay={5000} // Hides after 5 seconds
-                    onHide={() => console.log('Loading finished!')}
-                />
-
-            )}
- */
