@@ -10,7 +10,7 @@ const ProfilePage: FC<ProfilePageProps> = ({}) => {
     const { user } = useAuth();
 
     if(user === null || user === undefined) {
-        return <LoadingWrapper/>;
+        return <LoadingWrapper height='100%'/>;
     }
 
     return (

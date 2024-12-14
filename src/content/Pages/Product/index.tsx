@@ -35,7 +35,7 @@ const ProductPage: FC<ProductPageProps> = ({}) => {
     }, [fetchProducts]);
 
     if(products === null || products === undefined) {
-        return <LoadingWrapper/>;
+        return <LoadingWrapper height='100%'/>;
     }
 
     if(products.length === 0) {

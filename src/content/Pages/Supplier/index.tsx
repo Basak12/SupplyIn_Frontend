@@ -36,7 +36,7 @@ const SupplierPage: FC<SupplierPageProps> = ({}) => {
     }, [fetchSuppliers]);
 
     if(suppliers === null || suppliers === undefined) {
-        return <LoadingWrapper/>;
+        return <LoadingWrapper height='100%'/>;
     }
 
     if(suppliers.length === 0) {

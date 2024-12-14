@@ -35,7 +35,7 @@ const ProductCard:FC<ProductCardProps> = () => {
     }, [] as { id: string, name: string, description: string }[]);
 
     if(products === null || products === undefined) {
-        return <LoadingWrapper/>;
+        return <LoadingWrapper height='100%'/>;
     }
 
     return(

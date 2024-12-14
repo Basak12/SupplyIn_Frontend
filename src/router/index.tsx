@@ -4,6 +4,7 @@ import Header from "../components/Header";
 import allRouteItems from "./routeItems";
 import LoginPage from "../content/Pages/Auth/LoginCover";
 import RegisterPage from "../content/Pages/Auth/RegisterPage";
+import LoadingWrapper from "../components/LoadingWrapper";
 
 const AppRouter: React.FC = () => {
     const { pathname } = useLocation();
@@ -22,9 +23,8 @@ const AppRouter: React.FC = () => {
         <Route key={route.path} path={route.path} element={route.element} />
     ));
 
-
     return (
-            <Suspense fallback={<div>Loading...</div>}>
+            <Suspense fallback={<LoadingWrapper height='100%'/>}>
                 <Routes>
                     {isLoggedIn ? (
                         routeElements

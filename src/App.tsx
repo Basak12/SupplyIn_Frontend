@@ -12,7 +12,6 @@ function AppContent() {
     const location = useLocation();
     const renderSidebar = location.pathname === "/login" || location.pathname === "/register" || location.pathname === "/";
 
-
     return (
         <Box display="flex" height="100vh">
             {!renderSidebar && (
@@ -42,7 +41,7 @@ function AppContent() {
 function App() {
     return (
         <Router>
-            <Suspense fallback={<LoadingWrapper/> }>
+            <Suspense fallback={<LoadingWrapper height='100%'/> }>
                 <AuthProvider>
                     <NavigationProvider>
                        <AppContent />

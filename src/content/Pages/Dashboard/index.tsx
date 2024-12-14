@@ -47,7 +47,7 @@ const DashboardPage: FC<DashboardPageProps> = ({}) => {
     },[fetchPurchases]);
 
     if(purchases === null || purchases === undefined) {
-        return <LoadingWrapper/>;
+        return <LoadingWrapper height='100%'/>;
     }
 
     return (

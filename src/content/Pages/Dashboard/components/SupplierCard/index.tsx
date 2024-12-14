@@ -27,7 +27,7 @@ const SupplierCard:FC<SupplierCardProps> = () => {
 
 
     if(suppliers === null || suppliers === undefined) {
-        return <LoadingWrapper/>;
+        return <LoadingWrapper height='100%'/>;
     }
 
     return(

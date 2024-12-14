@@ -12,7 +12,7 @@ const allRouteItems = {
     productRouteItems,
     supplierRouteItems,
     purchaseRouteItems,
-    userRouteItems,
+    //userRouteItems,
     authRouteItems,
 };
 
