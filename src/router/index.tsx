@@ -18,6 +18,10 @@ const AppRouter: React.FC = () => {
         return <LoadingWrapper height='100%'/>;
     }
 
+    if(!isLoggedIn && pathname !== '/login' && pathname !== '/register') {
+        return <Navigate to="/login" />;
+    }
+
     const routeElements = Object.values(allRouteItems).flat().map((route) => (
         <Route key={route.path} path={route.path} element={route.element} />
     ));
@@ -25,15 +29,15 @@ const AppRouter: React.FC = () => {
     return (
             <Suspense fallback={<LoadingWrapper height='100%'/>}>
                 <Routes>
-                    {isLoggedIn ? (
-                            routeElements
-                    ) : (
+                    {isLoggedIn && (routeElements)}
+                    {isLoggedIn === false && (
                         <>
                             <Route path="/" element={<LoginPage />} />
                             <Route path="/login" element={<LoginPage />} />
                             <Route path="/register" element={<RegisterPage />} />
                         </>
-                    )}
+                        )
+                    }
                 </Routes>
             </Suspense>
     );
