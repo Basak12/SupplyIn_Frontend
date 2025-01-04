@@ -14,6 +14,8 @@ interface AuthContextProps {
     user: User | null;
     login: (access_token: string, name: string, surname:string, email:string, id:string) => void;
     logout: () => void;
+    isLoading: boolean;
+    setIsLoggedIn?: (isLoggedIn: boolean) => void;
 }
 
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
@@ -21,10 +23,13 @@ const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [user, setUser] = useState<User | null>(null);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+
     const navigate = useNavigate();
 
     useEffect(() => {
         const access_token = localStorage.getItem("access_token");
+
         if (access_token) {
             fetch(`${process.env.REACT_APP_BACKEND_URL}/auth/verify`, {
                 headers: {
@@ -40,16 +45,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                         logout();
                     }
                 })
-                .catch((error) => {
+                .catch(() => {
                     logout();
-                    console.log('error', error)
+                })
+                .finally(() => {
+                    setIsLoading(false);
                 });
+        } else {
+            setIsLoading(false);
+            setIsLoggedIn(false);
         }
     }, []);
 
+
     const login = (access_token: string, name: string, surname: string, email: string, id:string) => {
-        setUser({ name, surname, email, id, isActive: true });
+        setUser({name, surname, email, id, isActive: true});
         setIsLoggedIn(true);
+        localStorage.setItem("access_token", access_token);
         navigate("/dashboard");
     };
 
@@ -61,7 +73,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     return (
-        <AuthContext.Provider value={{ isLoggedIn, user, login, logout }}>
+        <AuthContext.Provider value={{ isLoggedIn, user, login, logout, isLoading, setIsLoggedIn }}>
             {children}
         </AuthContext.Provider>
     );

@@ -75,7 +75,7 @@ const SavePurchaseDialog: FC<SavePurchaseDialogProps> = ({open,setOpen, selected
                             }}
                             fullWidth
                         >
-                            View my purchases
+                            View purchases
                         </Button>
                         <Button
                             variant="contained"

@@ -40,15 +40,13 @@ function AppContent() {
 
 function App() {
     return (
-        <Router>
             <Suspense fallback={<LoadingWrapper height='100%'/> }>
-                <AuthProvider>
-                    <NavigationProvider>
+                <NavigationProvider>
+                    <AuthProvider>
                        <AppContent />
-                    </NavigationProvider>
-                </AuthProvider>
+                    </AuthProvider>
+                </NavigationProvider>
             </Suspense>
-        </Router>
     );
 }
 

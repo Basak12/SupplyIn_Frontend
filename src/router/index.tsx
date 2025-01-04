@@ -1,22 +1,21 @@
 import React, { lazy, Suspense, useEffect, useState } from "react";
 import { HashRouter as Router, Routes, Route, useLocation, Navigate } from "react-router-dom";
-import Header from "../components/Header";
 import allRouteItems from "./routeItems";
 import LoginPage from "../content/Pages/Auth/LoginCover";
 import RegisterPage from "../content/Pages/Auth/RegisterPage";
 import LoadingWrapper from "../components/LoadingWrapper";
+import {useAuth} from "../context/AuthContext";
 
 const AppRouter: React.FC = () => {
     const { pathname } = useLocation();
-    const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
-
-    useEffect(() => {
-        const token = localStorage.getItem("access_token");
-        setIsLoggedIn(!!token);
-    }, []);
+    const { isLoggedIn, isLoading, setIsLoggedIn } = useAuth();
 
     if (isLoggedIn === null) {
-        return <div>Loading...</div>;
+        return <LoadingWrapper height='100%'/>;
+    }
+
+    if (isLoading) {
+        return <LoadingWrapper height='100%'/>;
     }
 
     const routeElements = Object.values(allRouteItems).flat().map((route) => (
@@ -27,7 +26,7 @@ const AppRouter: React.FC = () => {
             <Suspense fallback={<LoadingWrapper height='100%'/>}>
                 <Routes>
                     {isLoggedIn ? (
-                        routeElements
+                            routeElements
                     ) : (
                         <>
                             <Route path="/" element={<LoginPage />} />
