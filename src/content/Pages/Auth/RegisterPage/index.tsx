@@ -1,13 +1,17 @@
-import React, { FC } from 'react';
+import React, {FC, useState} from 'react';
 import { CardMedia, Typography, Box, TextField, Button, Paper } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import API_URL from "../../../../config";
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import LoadingWrapper from "../../../../components/LoadingWrapper";
 
 const RegisterPage: FC = () => {
     const navigate = useNavigate();
+    const [registerError, setRegisterError] = useState<string | null>(null);
+    const [loading, setLoading] = useState(false);
+
 
     const formik = useFormik({
         initialValues: {
@@ -23,15 +27,22 @@ const RegisterPage: FC = () => {
             password: Yup.string().min(6, 'Password must be at least 6 characters').required('Password is required'),
         }),
         onSubmit: async (values) => {
+            setLoading(true)
             try {
                 const response = await axios.post(`${API_URL}/auth/register`, values);
-                console.log('User registered:', response.data);
-                navigate('/login');
+                console.log('User registered:', response);
+                //navigate('/login')
+                setLoading(false);
             } catch (err) {
-                console.error(err);
+                // @ts-ignore
+                if(err.status === 500){
+                    setRegisterError('This email already exists');
+                }
+                setLoading(false);
             }
         },
     });
+
 
     return (
         <Paper
@@ -104,13 +115,22 @@ const RegisterPage: FC = () => {
                     error={formik.touched.password && Boolean(formik.errors.password)}
                     helperText={formik.touched.password && formik.errors.password}
                 />
+                {registerError && (
+                    <Typography variant="body2" color="error">
+                        {registerError}
+                    </Typography>
+                )}
                 <Button
                     variant="contained"
                     color="primary"
                     type="submit"
                     sx={{ mt: 2 }}
                 >
-                    Register
+                    {loading ? (
+                        <LoadingWrapper message='' size={24}/>
+                    ) : (
+                        'Register'
+                    )}
                 </Button>
             </Box>
         </Paper>
