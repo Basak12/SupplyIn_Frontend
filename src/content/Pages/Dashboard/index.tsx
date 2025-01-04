@@ -52,12 +52,20 @@ const DashboardPage: FC<DashboardPageProps> = ({}) => {
               mt={2}
               direction='row'
             >
-                <Grid size={12}>
-                    <Box my={2}>
+                <Grid size={12}
+                sx={{
+                    backgroundColor: '#2c2c40',
+                    mb:2,
+                    borderWidth: 1,
+                    borderRadius: 2
+                }}>
+                    <Box m={2} sx={{
+
+                    }}>
                         <Typography variant='h5' color='white' sx={{
                             ml:1
                         }}>Dashboard</Typography>
-                        <Divider sx={{backgroundColor:'rgba(169,223,216,0.6)', my:1}}/>
+
                     </Box>
                 </Grid>
                 <Grid size={12}

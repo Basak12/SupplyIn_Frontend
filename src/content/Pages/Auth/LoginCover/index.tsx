@@ -49,8 +49,8 @@ const LoginPage: FC = () => {
                         backgroundPosition: 'center',
                     }}
                 >
-                    <Box sx={{ position: 'absolute', top: 50, left: 70 }}>
-                        <CardMedia component="img" height={45} image="/images/logo_white.png" alt="logo" sx={{ width: 220 }} />
+                    <Box sx={{ position: 'absolute', top: 50, left: 80 }}>
+                        <CardMedia component="img" height={45} image="/images/logo_new.png" alt="logo" sx={{ width: 220 }} />
                     </Box>
                     <Typography variant="h1" sx={{ fontWeight: 'bold', color: 'whitesmoke' }}>
                         Welcome <br /> to <br />Supply In

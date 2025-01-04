@@ -56,7 +56,7 @@ const CreatePurchasePage: FC = () => {
                     p: 4,
                 }}
             >
-                <Typography variant="h4" align="left" gutterBottom sx={{marginBottom: "2rem"}}>
+                <Typography variant="h5" align="left" gutterBottom sx={{marginBottom: "2rem"}}>
                     Supplier Selection
                 </Typography>
                 <Typography variant="h6" align="center" sx={{marginBottom: "2rem"}}>
@@ -81,7 +81,7 @@ const CreatePurchasePage: FC = () => {
                 p: 4,
             }}
         >
-            <Typography variant="h4" align="left" gutterBottom sx={{marginBottom: "2rem"}}>
+            <Typography variant="h5" align="left" gutterBottom sx={{marginBottom: "2rem"}}>
                 Supplier Selection
             </Typography>
             <Stepper alternativeLabel activeStep={0} sx={{ mb: 10 }}>

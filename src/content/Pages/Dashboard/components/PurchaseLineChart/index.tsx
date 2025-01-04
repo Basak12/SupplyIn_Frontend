@@ -11,14 +11,21 @@ interface PurchaseLineChartProps {
 }
 
 const PurchaseLineChart: FC<PurchaseLineChartProps> = ({ purchases }) => {
+
     const dailyPurchases: Record<string, number> = purchases.reduce((acc, purchase) => {
         const date = dayjs(purchase.purchaseDate).format('DD-MM-YYYY');
         acc[date] = (acc[date] || 0) + 1;
         return acc;
     }, {} as Record<string, number>);
 
-    const dates = Object.keys(dailyPurchases).sort();
-    const counts = dates.map(date => dailyPurchases[date]);
+    const dates = Object.keys(dailyPurchases);
+    const sortedDates = dates.sort((a, b) => {
+        const dateA = new Date(a.split('-').reverse().join('-')); // 'dd-mm-yyyy' -> 'yyyy-mm-dd'
+        const dateB = new Date(b.split('-').reverse().join('-')); // 'dd-mm-yyyy' -> 'yyyy-mm-dd'
+        return dateA.getTime() - dateB.getTime();
+    });
+
+    const counts = sortedDates.map(date => dailyPurchases[date]);
 
     const chartOptions = {
         title: {

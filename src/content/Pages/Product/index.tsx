@@ -76,7 +76,7 @@ const ProductPage: FC<ProductPageProps> = ({}) => {
                 <TableContainer component={Paper} sx={{ backgroundColor: '#2c2c40' }}>
                     <Table>
                         <TableHead>
-                            <TableRow>
+                            <TableRow sx={{ borderBottom: '2px solid #474765' }}>
                                 <TableCell sx={{ color: 'white', fontSize: '1rem' }}>Product Name</TableCell>
                                 <TableCell sx={{ color: 'white', fontSize: '1rem' }}>Description</TableCell>
                                 <TableCell sx={{ color: 'white', fontSize: '1rem' }}>Price</TableCell>
@@ -90,7 +90,7 @@ const ProductPage: FC<ProductPageProps> = ({}) => {
                         </TableHead>
                         <TableBody>
                             {products.map((product) => (
-                                <TableRow key={product.id}>
+                                <TableRow key={product.id} sx={{ borderBottom: '2px solid #474765' }}>
                                     <TableCell sx={{ color: 'white', fontSize: '1rem' }}>{product.name}</TableCell>
                                     <TableCell sx={{ color: 'white', fontSize: '1rem' }}>{product.description}</TableCell>
                                     <TableCell sx={{ color: 'white' , fontSize: '1rem'}}>{product.price}</TableCell>

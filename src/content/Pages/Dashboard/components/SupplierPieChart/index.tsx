@@ -51,6 +51,7 @@ const SupplierPieChart: FC<SupplierPieChartProps> = ({ purchases }) => {
                     borderRadius: 5,
                     borderWidth: 2,
                 },
+                top: 20,
             },
         ],
     };

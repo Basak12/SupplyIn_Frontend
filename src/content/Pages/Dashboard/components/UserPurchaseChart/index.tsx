@@ -49,6 +49,7 @@ const UserPieChart: FC<UserPieChartProps> = ({ purchases }) => {
                     borderRadius: 5,
                     borderWidth: 2,
                 },
+                top: 20,
             },
         ],
     };

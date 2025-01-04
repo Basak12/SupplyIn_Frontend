@@ -52,7 +52,7 @@ const Sidebar: React.FC = () => {
                 <CardMedia
                     component="img"
                     height={30}
-                    image="/images/logo_white.png"
+                    image="/images/logo_new.png"
                     alt="logo"
                     sx={{ width: 150 }}
                 />
@@ -60,10 +60,7 @@ const Sidebar: React.FC = () => {
             <Divider sx={{ backgroundColor: "#8e8e8f", mt: 5, mb: 2 }} />
             <Box display="flex" alignItems="center" flexDirection="column">
                 <AccountCircleIcon sx={{ color: "white", fontSize: 80 }} />
-                <Typography variant="h6" fontWeight="bold" sx={{ color: "whitesmoke" }}>
-                    Admin
-                </Typography>
-                <Typography fontSize={16} fontWeight="lighter" sx={{ color: "whitesmoke" }}>
+                <Typography variant="h6" fontWeight="bold" sx={{ color: "whitesmoke", mt:1 }}>
                     {user?.name} {user?.surname}
                 </Typography>
             </Box>

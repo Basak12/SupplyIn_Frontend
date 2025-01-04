@@ -33,7 +33,7 @@ const ProfilePage: FC<ProfilePageProps> = ({}) => {
                             {user.name}
                         </Typography>
                     </Box>
-                    <Divider sx={{backgroundColor:'#fff', my:1}}/>
+                    <Divider sx={{backgroundColor:'rgba(255,255,255,0.6)', my:1}}/>
                     <Box display='flex' justifyContent='space-between'>
                         <Typography variant="h6">
                             Surname:
@@ -42,7 +42,7 @@ const ProfilePage: FC<ProfilePageProps> = ({}) => {
                             {user.surname}
                         </Typography>
                     </Box>
-                    <Divider sx={{backgroundColor:'#fff', my:1}}/>
+                    <Divider sx={{backgroundColor:'rgba(255,255,255,0.6)', my:1}}/>
                     <Box display='flex' justifyContent='space-between'>
                         <Typography variant="h6">
                             Email:

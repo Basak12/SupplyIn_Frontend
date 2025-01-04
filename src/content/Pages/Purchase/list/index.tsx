@@ -34,6 +34,12 @@ const PurchasePage: FC<PurchasePageProps> = ({}) => {
         fetchPurchases();
     },[fetchPurchases]);
 
+    const sortedPurchases = purchases.sort((a, b) => {
+        const dateA = new Date(a.purchaseDate);
+        const dateB = new Date(b.purchaseDate);
+        return dateA.getTime() - dateB.getTime();
+    });
+
     if(purchases === null || purchases === undefined) {
         return <LoadingWrapper/>;
     }
@@ -76,7 +82,7 @@ const PurchasePage: FC<PurchasePageProps> = ({}) => {
                 <TableContainer component={Paper} sx={{ backgroundColor: '#2c2c40' }}>
                     <Table>
                         <TableHead>
-                            <TableRow>
+                            <TableRow sx={{ borderBottom: '2px solid #474765' }}>
                                 <TableCell sx={{ color: 'white', fontSize: '1rem' }}>Supplier</TableCell>
                                 <TableCell sx={{ color: 'white', fontSize: '1rem' }}>Purchase Date</TableCell>
                                 <TableCell sx={{ color: 'white', fontSize: '1rem' }}>Supplier Score</TableCell>
@@ -85,14 +91,21 @@ const PurchasePage: FC<PurchasePageProps> = ({}) => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {purchases.map((purchase) => (
-                                <TableRow key={purchase.id}>
+                            {sortedPurchases.reverse().map((purchase) => (
+                                <TableRow key={purchase.id} sx={{ borderBottom: '2px solid #474765' }}>
                                     <TableCell sx={{ color: 'white', fontSize: '1rem' }}>
                                         {purchase.supplier.name} ({purchase.supplier.contactInfo})
                                     </TableCell>
-                                    <TableCell sx={{ color: 'white', fontSize: '1rem' }}>{new Date(purchase.purchaseDate).toLocaleDateString()}</TableCell>
-                                    <TableCell sx={{ color: 'white', fontSize: '1rem' }}>{purchase.supplierScore.toFixed(2)}</TableCell>
-
+                                    <TableCell sx={{ color: 'white', fontSize: '1rem' }}>
+                                        {new Date(purchase.purchaseDate).toLocaleDateString('tr-TR', {
+                                            day: '2-digit',
+                                            month: '2-digit',
+                                            year: 'numeric',
+                                        })}
+                                    </TableCell>
+                                    <TableCell sx={{ color: 'white', fontSize: '1rem' }}>
+                                        {purchase.supplierScore.toFixed(2)}
+                                    </TableCell>
                                     <TableCell sx={{ color: 'white', fontSize: '1rem' }}>
                                         {purchase.product.name} - {purchase.product.description}
                                     </TableCell>

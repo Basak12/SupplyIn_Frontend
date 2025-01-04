@@ -79,14 +79,14 @@ const SupplierPage: FC<SupplierPageProps> = ({}) => {
                 <TableContainer component={Paper} sx={{ backgroundColor: '#2c2c40' }}>
                     <Table>
                         <TableHead>
-                            <TableRow>
+                            <TableRow sx={{ borderBottom: '2px solid #474765' }}>
                                 <TableCell sx={{ color: 'white', fontSize: '1rem' }}>Supplier Name</TableCell>
                                 <TableCell sx={{ color: 'white', fontSize: '1rem' }}>Contact Info</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {suppliers.map((supplier) => (
-                                <TableRow key={supplier.id}>
+                                <TableRow key={supplier.id} sx={{ borderBottom: '2px solid #474765' }}>
                                     <TableCell sx={{ color: 'white', fontSize: '1rem' }}>{supplier.name}</TableCell>
                                     <TableCell sx={{ color: 'white', fontSize: '1rem' }}>{supplier.contactInfo}</TableCell>
                                 </TableRow>
