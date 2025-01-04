@@ -12,7 +12,6 @@ const RegisterPage: FC = () => {
     const [registerError, setRegisterError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
 
-
     const formik = useFormik({
         initialValues: {
             name: '',
@@ -31,7 +30,7 @@ const RegisterPage: FC = () => {
             try {
                 const response = await axios.post(`${API_URL}/auth/register`, values);
                 console.log('User registered:', response);
-                //navigate('/login')
+                navigate('/login')
                 setLoading(false);
             } catch (err) {
                 // @ts-ignore
@@ -42,7 +41,6 @@ const RegisterPage: FC = () => {
             }
         },
     });
-
 
     return (
         <Paper
