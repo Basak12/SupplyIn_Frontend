@@ -23,6 +23,7 @@ const CreatePurchasePage: FC = () => {
     const [selectedProduct, setSelectedProduct] = useState<any>(null);
     const navigate = useNavigate();
     const [products, setProducts] = useState<Product[]>([]);
+    const [searchQuery, setSearchQuery] = useState<string>(""); // State for search query
 
     const fetchProducts = useCallback(async () => {
         try {
@@ -73,7 +74,10 @@ const CreatePurchasePage: FC = () => {
         return acc;
     }, [] as { id: string, name: string, description: string }[]);
 
-
+    const searchedProducts = filteredProducts.filter((product) =>
+        product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product.description.toLowerCase().includes(searchQuery.toLowerCase())
+    );
     return (
         <Box
             sx={{
@@ -107,6 +111,8 @@ const CreatePurchasePage: FC = () => {
                     placeholder="Search product"
                     variant="outlined"
                     fullWidth
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
                     sx={{
                         maxWidth: 600,
                         backgroundColor: '#2c2c40',
@@ -127,7 +133,7 @@ const CreatePurchasePage: FC = () => {
                 />
             </Box>
             <Grid container spacing={3}>
-                {filteredProducts.map((product, index) => (
+                {searchedProducts.map((product, index) => (
                     <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={index}>
                         <Card
                             onClick={() => setSelectedProduct(product)}
@@ -162,6 +168,22 @@ const CreatePurchasePage: FC = () => {
                     </Grid>
                 ))}
             </Grid>
+            {searchedProducts.length === 0 && (
+                <Card sx={{
+                    backgroundColor: '#2c2c40',
+                    borderRadius: 3,
+                    color: '#ffffff',
+                    height: 150,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                }}>
+                    <Typography variant="h6" align="center">
+                        No products found
+                    </Typography>
+                </Card>
+            )}
             {selectedProduct && (
                 <Box display="flex" justifyContent="center" mt={4}>
                     <Button
