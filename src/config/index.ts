@@ -1,4 +1,4 @@
-const API_URL = 'https://supplyin-backend.onrender.com';
+const API_URL = 'http://localhost:5050';
 //http://localhost:5050
 //https://supplyin-backend.onrender.com
 
