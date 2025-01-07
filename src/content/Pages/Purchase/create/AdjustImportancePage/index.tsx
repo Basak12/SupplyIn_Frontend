@@ -81,23 +81,23 @@ const AdjustImportancePage: FC = () => {
     const importanceLevels = [
         {
             value: 1,
-            label: 'Equal Importance'
+            label: 'Equally Important'
         },
         {
             value: 3,
-            label: 'Moderate Importance'
+            label: 'Moderately Important'
         },
         {
             value: 5,
-            label: 'Strong Importance'
+            label: 'Strongly Important'
         },
         {
             value: 7,
-            label: 'Very Strong Importance'
+            label: 'Very Strongly Important'
         },
         {
             value: 9,
-            label: 'Extreme Importance'
+            label: 'Extremely Important'
         }
     ]
 

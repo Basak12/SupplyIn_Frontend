@@ -63,13 +63,15 @@ const SupplierPage: FC<SupplierPageProps> = ({}) => {
             justifyContent='center'
             alignItems='stretch'
             m={1}
+            mt={2}
             direction='column' sx={{
 
         }}>
             <Grid size={12} sx={{
                 backgroundColor: '#2c2c40',
+                borderRadius:2
             }}>
-                <Box p={3}>
+                <Box m={2}>
                     <Typography variant='h6' color='white'>Suppliers</Typography>
                 </Box>
             </Grid>

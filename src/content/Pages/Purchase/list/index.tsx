@@ -18,6 +18,16 @@ import {getPurchases} from "../../../../api/getPurchases";
 import LoadingWrapper from "../../../../components/LoadingWrapper";
 interface PurchasePageProps {}
 
+const supplierColorMap: Record<string, { backgroundColor: string; color: string }> = {
+    "Supplier X": { backgroundColor: "#4D65BB", color: "black" },
+    "Supplier Y": { backgroundColor: "#8CC56F", color: "black" },
+    "Supplier Z": { backgroundColor: "#F5C158", color: "black" },
+};
+
+const getSupplierStyle = (supplierName: string) => {
+    return supplierColorMap[supplierName] || { backgroundColor: "#CCCCCC", color: "black" }; // Default fallback
+};
+
 const PurchasePage: FC<PurchasePageProps> = ({}) => {
     const [purchases, setPurchases] = useState<Purchase[]>([]);
 
@@ -68,16 +78,18 @@ const PurchasePage: FC<PurchasePageProps> = ({}) => {
             justifyContent='center'
             alignItems='stretch'
             m={1}
+            mt={2}
             direction='column'>
             <Grid size={12} sx={{
                 backgroundColor: '#2c2c40',
+                borderRadius: 2
             }}>
-                <Box p={3}>
+                <Box m={2}>
                     <Typography variant='h6' color='white'>Purchases</Typography>
                 </Box>
             </Grid>
             <Grid size={12} sx={{
-                mt:4
+                mt:2,
             }}>
                 <TableContainer component={Paper} sx={{ backgroundColor: '#2c2c40' }}>
                     <Table>
@@ -93,8 +105,34 @@ const PurchasePage: FC<PurchasePageProps> = ({}) => {
                         <TableBody>
                             {sortedPurchases.reverse().map((purchase) => (
                                 <TableRow key={purchase.id} sx={{ borderBottom: '2px solid #474765' }}>
-                                    <TableCell sx={{ color: 'white', fontSize: '1rem' }}>
-                                        {purchase.supplier.name} ({purchase.supplier.contactInfo})
+                                    <TableCell
+                                    sx={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        gap: "12px",
+                                        padding: "12px 16px",
+                                        backgroundColor: "#2c2c40",
+                                        borderBottom: "0px solid #474765",
+                                    }}
+                                >
+                                    <Box
+                                        sx={{
+                                            minWidth: "80px",
+                                            px: 2,
+                                            py: 1,
+                                            borderRadius: "12px",
+                                            fontSize: "0.875rem",
+                                            fontWeight: "bold",
+                                            textAlign: "center",
+                                            ...getSupplierStyle(purchase.supplier.name),
+                                            margin: 0,
+                                        }}
+                                    >
+                                        {purchase.supplier.name}
+                                    </Box>  
+                                    <Typography variant="body2" sx={{ color: "white", margin: 0 }}>
+                                            {purchase.supplier.contactInfo}
+                                    </Typography>
                                     </TableCell>
                                     <TableCell sx={{ color: 'white', fontSize: '1rem' }}>
                                         {new Date(purchase.purchaseDate).toLocaleDateString('tr-TR', {
