@@ -19,6 +19,7 @@ import { getSuppliersByProduct } from "../../../../../api/getSupplierByProduct";
 import { Supplier } from "../../../../../model/supplier";
 import {useAuth} from "../../../../../context/AuthContext";
 import {getSupplierProductsByProductId} from "../../../../../api/getSupplierProductByProductId";
+import {SupplierProduct} from "../../../../../model/supplierProduct";
 
 const TOPSISResults: FC = () => {
     const location = useLocation();
@@ -30,8 +31,9 @@ const TOPSISResults: FC = () => {
     const [sortedSuppliers, setSortedSuppliers] = useState<any>([]);
     const [open, setOpen] = useState<boolean>(false);
     const [suppliersByProduct, setSuppliersByProduct] = useState<any>([]);
+    const [supplierProduct, setSupplierProduct] = useState<SupplierProduct[]>([]);
 
-    // todo add error handling for null, undefineqd, empty values for suppliers
+    // todo add error handling for null, undefined, empty values for suppliers
 
 
     const fetchSupplierProductByProductId = useCallback(async () =>{
@@ -41,18 +43,40 @@ const TOPSISResults: FC = () => {
         }
         try {
             const response = await getSupplierProductsByProductId(selectedProduct.id)
-            console.log('getSupplierProductsByProductId', response)
+            setSupplierProduct(response);
+            const processedData = response.map((item: any) => ({
+                id: item.id,
+                name: item.supplier.name,
+                price: parseFloat(item.price),
+                deliveryTime: parseFloat(item.deliveryTimeWeeks),
+                warranty: parseFloat(item.warranty.replace(' Years', '')),
+                compliance: parseFloat(item.safetyRegulationsCompliance.replace('%', '')),
+                reliability: parseFloat(item.reliability),
+                criteriaWeights: [
+                    parseFloat(item.price),
+                    parseFloat(item.deliveryTimeWeeks),
+                    parseFloat(item.warranty),
+                    parseFloat(item.safetyRegulationsCompliance),
+                    parseFloat(item.reliability),
+                ],
+            }));
+            console.log('processedData', processedData);
         }
         catch (error){
             console.log('error', error);
         }
-
     },[])
 
     useEffect(() => {
         fetchSupplierProductByProductId();
     }, [fetchSupplierProductByProductId]);
 
+    console.log('aasdadas', supplierProduct);
+
+
+    if(!supplierProduct) {
+        return <p>not found</p>;
+    }
 
     //
     // const fetchSuppliersByProductId = useCallback(async () => {
