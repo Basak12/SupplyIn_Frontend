@@ -90,21 +90,21 @@ const ProductPage: FC<ProductPageProps> = ({}) => {
                                 <TableCell sx={{ color: 'white', fontSize: '1rem' }}>Warranty</TableCell>
                             </TableRow>
                         </TableHead>
-                        <TableBody>
-                            {products.map((product) => (
-                                <TableRow key={product.id} sx={{ borderBottom: '2px solid #474765' }}>
-                                    <TableCell sx={{ color: 'white', fontSize: '1rem' }}>{product.name}</TableCell>
-                                    <TableCell sx={{ color: 'white', fontSize: '1rem' }}>{product.description}</TableCell>
-                                    <TableCell sx={{ color: 'white' , fontSize: '1rem'}}>{product.price}</TableCell>
-                                    <TableCell sx={{ color: 'white', fontSize: '1rem' }}>{product.productCategory}</TableCell>
-                                    <TableCell sx={{ color: 'white', fontSize: '1rem'}}>{product.deliveryTimeWeeks}</TableCell>
-                                    <TableCell sx={{ color: 'white', fontSize: '1rem' }}>{product.reliability}</TableCell>
-                                    <TableCell sx={{ color: 'white', fontSize: '1rem'}}>{product.safetyRegulationsCompliance}</TableCell>
-                                    <TableCell sx={{ color: 'white', fontSize: '1rem'}}>{product.supplier.name}</TableCell>
-                                    <TableCell sx={{ color: 'white', fontSize: '1rem' }}>{product.warranty}</TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
+                        {/*<TableBody>*/}
+                        {/*    {products.map((product) => (*/}
+                        {/*        <TableRow key={product.id} sx={{ borderBottom: '2px solid #474765' }}>*/}
+                        {/*            <TableCell sx={{ color: 'white', fontSize: '1rem' }}>{product.name}</TableCell>*/}
+                        {/*            <TableCell sx={{ color: 'white', fontSize: '1rem' }}>{product.description}</TableCell>*/}
+                        {/*            <TableCell sx={{ color: 'white' , fontSize: '1rem'}}>{product.price}</TableCell>*/}
+                        {/*            <TableCell sx={{ color: 'white', fontSize: '1rem' }}>{product.productCategory}</TableCell>*/}
+                        {/*            <TableCell sx={{ color: 'white', fontSize: '1rem'}}>{product.deliveryTimeWeeks}</TableCell>*/}
+                        {/*            <TableCell sx={{ color: 'white', fontSize: '1rem' }}>{product.reliability}</TableCell>*/}
+                        {/*            <TableCell sx={{ color: 'white', fontSize: '1rem'}}>{product.safetyRegulationsCompliance}</TableCell>*/}
+                        {/*            <TableCell sx={{ color: 'white', fontSize: '1rem'}}>{product.supplier.name}</TableCell>*/}
+                        {/*            <TableCell sx={{ color: 'white', fontSize: '1rem' }}>{product.warranty}</TableCell>*/}
+                        {/*        </TableRow>*/}
+                        {/*    ))}*/}
+                        {/*</TableBody>*/}
                     </Table>
                 </TableContainer>
             </Grid>
