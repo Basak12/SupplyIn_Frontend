@@ -41,6 +41,8 @@ const DashboardPage: FC<DashboardPageProps> = ({}) => {
         return <LoadingWrapper height='100%'/>;
     }
 
+    console.log('purchase', purchases);
+
     return (
         <>
             <Grid
@@ -84,32 +86,55 @@ const DashboardPage: FC<DashboardPageProps> = ({}) => {
                        <SupplierCard/>
                     </Grid>
                 </Grid>
-                <Grid size={12}
-                      container
-                      display='flex'
-                      justifyContent='center' direction='row'
-                      my={2}
-                      spacing={2}>
-                    <Grid size={6}>
-                        <SupplierPieChart purchases={purchases} />
-                    </Grid>
-                    <Grid size={6}>
-                        <UserPurchaseChart purchases={purchases} />
-                    </Grid>
-                </Grid>
-                <Grid size={12}
-                      container
-                      display='flex'
-                      justifyContent='center'
-                      direction='row'
-                      spacing={2}>
-                    <Grid size={6}>
-                        <PurchaseBarChart purchases={purchases} />
-                    </Grid>
-                    <Grid size={6}>
-                        <PurchaseLineChart purchases={purchases} />
-                    </Grid>
-                </Grid>
+                {
+                    purchases.length === 0 ? (
+                        <Grid  size={12}
+                               container
+                               display='flex'
+                               justifyContent='center' direction='row'
+                               my={2}
+                               spacing={2}
+                               sx={{
+                                   backgroundColor: '#2c2c40',
+                                   mb:2,
+                                   borderWidth: 1,
+                                   borderRadius: 2,
+                                   p:1
+                               }}>
+                            <Typography variant='h5' color='white'>
+                                No purchases found
+                            </Typography>
+                        </Grid>
+                    ):
+                        <>
+                            <Grid size={12}
+                                  container
+                                  display='flex'
+                                  justifyContent='center' direction='row'
+                                  my={2}
+                                  spacing={2}>
+                                <Grid size={6}>
+                                    <SupplierPieChart purchases={purchases} />
+                                </Grid>
+                                <Grid size={6}>
+                                    <UserPurchaseChart purchases={purchases} />
+                                </Grid>
+                            </Grid>
+                            <Grid size={12}
+                                  container
+                                  display='flex'
+                                  justifyContent='center'
+                                  direction='row'
+                                  spacing={2}>
+                                <Grid size={6}>
+                                    <PurchaseBarChart purchases={purchases} />
+                                </Grid>
+                                <Grid size={6}>
+                                    <PurchaseLineChart purchases={purchases} />
+                                </Grid>
+                            </Grid>
+                        </>
+                }
             </Grid>
         </>
     );
