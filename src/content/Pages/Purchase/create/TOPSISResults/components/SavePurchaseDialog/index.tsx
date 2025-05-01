@@ -1,7 +1,8 @@
-import React, {FC, useState} from 'react';
+import React, {FC, useCallback, useState} from 'react';
 import {Card, Typography, Box, Fab, Dialog, DialogContent, Button} from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import { useNavigate } from 'react-router-dom';
+import {postPurchaseResult} from "../../../../../../../api/postPurchaseResult";
 interface SavePurchaseDialogProps {
     open: boolean;
     setOpen: (open: boolean) => void;

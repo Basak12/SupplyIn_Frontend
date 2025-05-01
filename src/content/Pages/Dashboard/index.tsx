@@ -41,8 +41,6 @@ const DashboardPage: FC<DashboardPageProps> = ({}) => {
         return <LoadingWrapper height='100%'/>;
     }
 
-    console.log('purchase', purchases);
-
     return (
         <>
             <Grid
@@ -93,13 +91,15 @@ const DashboardPage: FC<DashboardPageProps> = ({}) => {
                                display='flex'
                                justifyContent='center' direction='row'
                                my={2}
+                               mx={1}
                                spacing={2}
                                sx={{
                                    backgroundColor: '#2c2c40',
                                    mb:2,
                                    borderWidth: 1,
                                    borderRadius: 2,
-                                   p:1
+                                   p:1,
+                                   width: '50%',
                                }}>
                             <Typography variant='h5' color='white'>
                                 No purchases found

@@ -12,4 +12,11 @@ export interface SupplierProduct {
     safetyRegulationsCompliance: string;
     reliability: number;
     deliveryTimeWeeks: number;
+    criteriaWeight: {
+        price: number;
+        deliveryTime: number;
+        warranty: number;
+        reliability: number;
+        safetyRegulationsCompliance: number;
+    };
 }

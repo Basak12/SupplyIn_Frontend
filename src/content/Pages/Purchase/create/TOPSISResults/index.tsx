@@ -17,9 +17,9 @@ import { postPurchaseResult } from "../../../../../api/postPurchaseResult";
 import LoadingWrapper from "../../../../../components/LoadingWrapper";
 import { getSuppliersByProduct } from "../../../../../api/getSupplierByProduct";
 import { Supplier } from "../../../../../model/supplier";
-import {useAuth} from "../../../../../context/AuthContext";
-import {getSupplierProductsByProductId} from "../../../../../api/getSupplierProductByProductId";
-import {SupplierProduct} from "../../../../../model/supplierProduct";
+import { useAuth } from "../../../../../context/AuthContext";
+import { getSupplierProductsByProductId } from "../../../../../api/getSupplierProductByProductId";
+import { SupplierProduct } from "../../../../../model/supplierProduct";
 
 const TOPSISResults: FC = () => {
     const location = useLocation();
@@ -30,222 +30,200 @@ const TOPSISResults: FC = () => {
 
     const [sortedSuppliers, setSortedSuppliers] = useState<any>([]);
     const [open, setOpen] = useState<boolean>(false);
-    const [suppliersByProduct, setSuppliersByProduct] = useState<any>([]);
     const [supplierProduct, setSupplierProduct] = useState<SupplierProduct[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
 
-    // todo add error handling for null, undefined, empty values for suppliers
-
-
-    const fetchSupplierProductByProductId = useCallback(async () =>{
-        if (!selectedProduct?.id || !selectedProduct?.name) {
-            console.error("Product is missing");
-            return <LoadingWrapper />;
+    const fetchSupplierProductByProductId = useCallback(async () => {
+        if (!selectedProduct?.id) {
+            console.error("Product ID is missing");
+            setError("Product information is missing.");
+            setLoading(false);
+            return;
         }
+        setLoading(true);
+        setError(null);
         try {
-            const response = await getSupplierProductsByProductId(selectedProduct.id)
-            setSupplierProduct(response);
-            const processedData = response.map((item: any) => ({
+            const response = await getSupplierProductsByProductId(selectedProduct.id);
+            const processedData = response.map((item:any) => ({
                 id: item.id,
                 name: item.supplier.name,
+                supplierId: item.supplier.id,
                 price: parseFloat(item.price),
                 deliveryTime: parseFloat(item.deliveryTimeWeeks),
                 warranty: parseFloat(item.warranty.replace(' Years', '')),
                 compliance: parseFloat(item.safetyRegulationsCompliance.replace('%', '')),
                 reliability: parseFloat(item.reliability),
-                criteriaWeights: [
-                    parseFloat(item.price),
-                    parseFloat(item.deliveryTimeWeeks),
-                    parseFloat(item.warranty),
-                    parseFloat(item.safetyRegulationsCompliance),
-                    parseFloat(item.reliability),
-                ],
+                criteriaWeight: {
+                    price: parseFloat(item.price),
+                    deliveryTime: parseFloat(item.deliveryTimeWeeks),
+                    warranty: parseFloat(item.warranty.replace(' Years', '')),
+                    safetyRegulationsCompliance: parseFloat(item.safetyRegulationsCompliance.replace('%', '')),
+                    reliability: parseFloat(item.reliability),
+                },
             }));
-            console.log('processedData', processedData);
+            setSupplierProduct(processedData);
+        } catch (err: any) {
+            console.error('Error fetching supplier products:', err);
+            setError("Failed to fetch supplier products.");
+        } finally {
+            setLoading(false);
         }
-        catch (error){
-            console.log('error', error);
-        }
-    },[])
+    }, [selectedProduct?.id]);
 
     useEffect(() => {
         fetchSupplierProductByProductId();
     }, [fetchSupplierProductByProductId]);
 
-    console.log('aasdadas', supplierProduct);
+    const normalizeMatrix = useCallback(
+        (supplierProducts: SupplierProduct[]): number[][] => {
+            if (!supplierProducts || supplierProducts.length === 0 || !supplierProducts[0]?.criteriaWeight) {
+                return [];
+            }
 
+            const criteriaKeys = Object.keys(supplierProducts[0].criteriaWeight);
+            const transposed: number[][] = criteriaKeys.map((key, colIndex) =>
+                supplierProducts.map((supplierProduct) => (supplierProduct.criteriaWeight as any)[key] as number)
+            );
 
-    if(!supplierProduct) {
-        return <p>not found</p>;
+            return supplierProducts.map((supplier) => {
+                const criteriaValues = Object.values(supplier.criteriaWeight) as number[];
+                return criteriaValues.map((value, index) => {
+                    const columnValues = transposed[index];
+                    const sumOfSquares = columnValues.reduce((sum: number, val: number) => sum + val ** 2, 0);
+                    return value / Math.sqrt(sumOfSquares);
+                });
+            });
+        },
+        []
+    );
+
+    const weightedNormalizeMatrix = useCallback(
+        (normalizedMatrix: number[][], weights: number[]): number[][] => {
+            return normalizedMatrix.map((row) =>
+                row.map((value, index) => (weights && weights[index] !== undefined) ? value * weights[index] : value)
+            );
+        },
+        []
+    );
+
+    const findIdealSolutions = useCallback(
+        (weightedMatrix: number[][]): { ideal: number[]; antiIdeal: number[] } => {
+            if (!weightedMatrix || weightedMatrix.length === 0 || weightedMatrix[0].length === 0) {
+                return { ideal: [], antiIdeal: [] }; // Handle empty matrix
+            }
+            const criteriaTypes: ("cost" | "benefit")[] = ["cost", "cost", "benefit", "benefit", "benefit"];
+
+            const ideal = weightedMatrix[0].map((_, colIndex) =>
+                criteriaTypes[colIndex] === "benefit"
+                    ? Math.max(...weightedMatrix.map((row) => row[colIndex]))
+                    : Math.min(...weightedMatrix.map((row) => row[colIndex]))
+            );
+
+            const antiIdeal = weightedMatrix[0].map((_, colIndex) =>
+                criteriaTypes[colIndex] === "benefit"
+                    ? Math.min(...weightedMatrix.map((row) => row[colIndex]))
+                    : Math.max(...weightedMatrix.map((row) => row[colIndex]))
+            );
+
+            return { ideal, antiIdeal };
+        },
+        []
+    );
+
+    const calculateDistances = useCallback(
+        (
+            weightedMatrix: number[][],
+            ideal: number[],
+            antiIdeal: number[]
+        ): { distancesToIdeal: number[]; distancesToAntiIdeal: number[] } => {
+            const calculateDistance = (row: number[], target: number[]) => {
+                return Math.sqrt(
+                    row.reduce((sum, value, colIndex) => {
+                        const diff = value - target[colIndex];
+                        const tolerance = 0.0001;
+                        const adjustedDiff = Math.abs(diff) < tolerance ? tolerance : diff;
+                        return sum + adjustedDiff ** 2;
+                    }, 0)
+                );
+            };
+
+            const distancesToIdeal = weightedMatrix.map((row) => calculateDistance(row, ideal));
+            const distancesToAntiIdeal = weightedMatrix.map((row) => calculateDistance(row, antiIdeal));
+
+            return { distancesToIdeal, distancesToAntiIdeal };
+        },
+        []
+    );
+
+    const calculateScores = useCallback(
+        (distancesToIdeal: number[], distancesToAntiIdeal: number[]): number[] => {
+            return distancesToAntiIdeal.map((distance, index) =>
+                distance / (distance + distancesToIdeal[index])
+            );
+        },
+        []
+    );
+
+    useEffect(() => {
+        if (supplierProduct && supplierProduct.length > 0 && weights && weights.length > 0) {
+            const normalizedMatrix = normalizeMatrix(supplierProduct);
+            const weightedMatrix = weightedNormalizeMatrix(normalizedMatrix, weights);
+            const { ideal, antiIdeal } = findIdealSolutions(weightedMatrix);
+            const { distancesToIdeal, distancesToAntiIdeal } = calculateDistances(weightedMatrix, ideal, antiIdeal);
+            const scores = calculateScores(distancesToIdeal, distancesToAntiIdeal);
+            const scoresOutOf100 = scores.map(score => score * 100);
+
+            const rankedSuppliers = supplierProduct.map((supplierProduct, index) => ({
+                ...supplierProduct,
+                score: scoresOutOf100[index],
+                supplierId: supplierProduct.supplierId,
+            })).sort((a, b) => b.score - a.score);
+
+            setSortedSuppliers(rankedSuppliers);
+        }
+    }, [supplierProduct, weights, normalizeMatrix, weightedNormalizeMatrix, findIdealSolutions, calculateDistances, calculateScores]);
+
+    const bestSupplier = sortedSuppliers[0];
+    const postPurchaseResults = useCallback(async (bestSupplier: any) => {
+        if (!bestSupplier?.id || bestSupplier?.score === undefined || bestSupplier?.score === null) {
+            console.error('Supplier information is missing for purchase');
+            return;
+        }
+        if(!selectedProduct?.id){
+            console.error('Product information is missing for purchase');
+            return;
+        }
+        if (!user?.id) {
+            console.log('User is missing');
+            return;
+        }
+        try {
+            const response = await postPurchaseResult({
+                userId: user.id,
+                productId: selectedProduct.id,
+                supplierId: bestSupplier.supplierId,
+                supplierScore: parseFloat(bestSupplier.score.toFixed(2)),
+            });
+            setOpen(true);
+        } catch (error) {
+            console.error('Error saving supplier selection:', error);
+        }
+    }, [selectedProduct?.id, user?.id]);
+
+    if (loading) {
+        return <LoadingWrapper />;
     }
 
-    //
-    // const fetchSuppliersByProductId = useCallback(async () => {
-    //     if (!selectedProduct?.id || !selectedProduct?.name) {
-    //         console.error("Product is missing");
-    //         return <LoadingWrapper />;
-    //     }
-    //     try {
-    //         const response = await getSuppliersByProduct(selectedProduct.name);
-    //         const processedData = response.map((item: any) => ({
-    //             id: item.supplierid,
-    //             name: item.suppliername,
-    //             contactInfo: item.contactinfo,
-    //             price: parseFloat(item.price),
-    //             deliveryTime: parseFloat(item.deliverytimeweeks),
-    //             warranty: parseFloat(item.warranty.replace(' Years', '')),
-    //             compliance: parseFloat(item.compliance.replace('%', '')),
-    //             reliability: parseFloat(item.reliability),
-    //             criteriaWeights: [
-    //                 parseFloat(item.price),
-    //                 parseFloat(item.deliverytimeweeks),
-    //                 parseFloat(item.warranty),
-    //                 parseFloat(item.compliance),
-    //                 parseFloat(item.reliability),
-    //             ],
-    //         }));
-    //         setSuppliersByProduct(processedData);
-    //     } catch (error) {
-    //         console.error("Error getting suppliers by product:", error);
-    //     }
-    // }, [selectedProduct]);
-    //
-    // useEffect(() => {
-    //     fetchSuppliersByProductId();
-    // }, [fetchSuppliersByProductId]);
+    if (error) {
+        return (
+            <Card sx={{ p: 2, m: 2 }}>
+                <Typography color="error">{error}</Typography>
+            </Card>
+        );
+    }
 
-    // TOPSIS calculation
-    // useEffect(() => {
-    //     if (weights && suppliersByProduct.length > 0) {
-    //         const normalizeMatrix = (suppliers: Supplier[]): number[][] => {
-    //             const transposed: number[][] = suppliers[0].criteriaWeights.map((_, colIndex) =>
-    //                 suppliers.map((supplier) => supplier.criteriaWeights[colIndex])
-    //             );
-    //
-    //             return suppliers.map((supplier) =>
-    //                 supplier.criteriaWeights.map((value, index) => {
-    //                     const columnValues = transposed[index];
-    //                     const sumOfSquares = columnValues.reduce((sum: number, val: number) => sum + val ** 2, 0);
-    //                     return value / Math.sqrt(sumOfSquares);
-    //                 })
-    //             );
-    //         };
-    //
-    //         const weightedNormalizeMatrix = (normalizedMatrix: number[][], weights: number[]): number[][] => {
-    //             return normalizedMatrix.map((row) =>
-    //                 row.map((value, index) => value * weights[index])
-    //             );
-    //         };
-    //
-    //         const findIdealSolutions = (weightedMatrix: number[][]): { ideal: number[]; antiIdeal: number[] } => {
-    //             const criteriaTypes: ("cost" | "benefit")[] = ["cost", "cost", "benefit", "benefit", "benefit"]; // Kriter türlerini belirtin
-    //
-    //             const ideal = weightedMatrix[0].map((_, colIndex) =>
-    //                 criteriaTypes[colIndex] === "benefit"
-    //                     ? Math.max(...weightedMatrix.map((row) => row[colIndex]))
-    //                     : Math.min(...weightedMatrix.map((row) => row[colIndex]))
-    //             );
-    //
-    //             const antiIdeal = weightedMatrix[0].map((_, colIndex) =>
-    //                 criteriaTypes[colIndex] === "benefit"
-    //                     ? Math.min(...weightedMatrix.map((row) => row[colIndex]))
-    //                     : Math.max(...weightedMatrix.map((row) => row[colIndex]))
-    //             );
-    //
-    //             return { ideal, antiIdeal };
-    //         };
-    //
-    //         const calculateDistances = (
-    //             weightedMatrix: number[][],
-    //             ideal: number[],
-    //             antiIdeal: number[]
-    //         ): { distancesToIdeal: number[]; distancesToAntiIdeal: number[] } => {
-    //             const distancesToIdeal = weightedMatrix.map((row, rowIndex) => {
-    //                 const distance = Math.sqrt(
-    //                     row.reduce(
-    //                         (sum, value, colIndex) => {
-    //                             const diff = value - ideal[colIndex];
-    //                             const tolerance = 0.0001;
-    //                             const adjustedDiff = Math.abs(diff) < tolerance ? tolerance : diff;
-    //                             return sum + adjustedDiff ** 2;
-    //                         },
-    //                         0
-    //                     )
-    //                 );
-    //                 return distance;
-    //             });
-    //
-    //             const distancesToAntiIdeal = weightedMatrix.map((row, rowIndex) => {
-    //                 const distance = Math.sqrt(
-    //                     row.reduce(
-    //                         (sum, value, colIndex) => {
-    //                             const diff = value - antiIdeal[colIndex];
-    //                             const tolerance = 0.0001;
-    //                             const adjustedDiff = Math.abs(diff) < tolerance ? tolerance : diff;
-    //                             return sum + adjustedDiff ** 2;
-    //                         },
-    //                         0
-    //                     )
-    //                 );
-    //                 return distance;
-    //             });
-    //             return { distancesToIdeal, distancesToAntiIdeal };
-    //         };
-    //
-    //         const calculateScores = (distancesToIdeal: number[], distancesToAntiIdeal: number[]): number[] => {
-    //             return distancesToAntiIdeal.map((distance, index) =>
-    //                 distance / (distance + distancesToIdeal[index])
-    //             );
-    //         };
-    //
-    //         const normalizedMatrix = normalizeMatrix(suppliersByProduct);
-    //         const weightedMatrix = weightedNormalizeMatrix(normalizedMatrix, weights);
-    //         const { ideal, antiIdeal } = findIdealSolutions(weightedMatrix);
-    //         const { distancesToIdeal, distancesToAntiIdeal } = calculateDistances(weightedMatrix, ideal, antiIdeal);
-    //         const scores = calculateScores(distancesToIdeal, distancesToAntiIdeal);
-    //         const scoresOutOf100 = scores.map(score => score * 100);
-    //
-    //         const rankedSuppliers = suppliersByProduct.map((supplier: any, index: number) => ({
-    //             name: supplier.name,
-    //             score: scoresOutOf100[index],
-    //             supplierId: supplier.id,
-    //         })).sort((a: any, b: any) => b.score - a.score);
-    //
-    //         setSortedSuppliers(rankedSuppliers);
-    //     }
-    // }, [weights, suppliersByProduct]);
-
-    // const bestSupplier = sortedSuppliers[0];
-    //
-    // const postPurchaseResults = useCallback(async (bestSupplier: any) => {
-    //     if (!selectedProduct?.id || !bestSupplier?.supplierId || !bestSupplier?.score) {
-    //         console.error('Product or supplier is missing');
-    //         return;
-    //     }
-    //     if(!user?.id) {
-    //         console.log('User is missing');
-    //         return;
-    //     }
-    //     try {
-    //         console.log(selectedProduct, bestSupplier);
-    //         const response = await postPurchaseResult({
-    //             userId: user.id,
-    //             productId: selectedProduct.id,
-    //             supplierId: bestSupplier.supplierId,
-    //             supplierScore: (bestSupplier.score),
-    //         });
-    //
-    //         console.log('Supplier selection saved', response);
-    //     } catch (error) {
-    //         console.error('Error saving supplier selection:', error);
-    //     }
-    // }, [selectedProduct]);
-    //
-    // const handlePurchase = (bestSupplier: any) => {
-    //     setOpen(true);
-    //     postPurchaseResults(bestSupplier);
-    // };
-
-    if (!suppliersByProduct.length) {
+    if (!supplierProduct?.length) {
         return (
             <Card sx={{ p: 2, m: 2 }}>
                 <Typography>No supplier found for this product</Typography>
@@ -254,57 +232,54 @@ const TOPSISResults: FC = () => {
     }
 
     return (
-        <>
-            <Box sx={{ color: "#ffffff", p: 4 }}>
-                <Typography variant="h4" align="left" gutterBottom sx={{ marginBottom: "2rem" }}>
-                    Supplier Selection
-                </Typography>
-                <Stepper alternativeLabel activeStep={2} sx={{ mb: 10 }}>
-                    {steps.map(label => (
-                        <Step key={label}>
-                            <StepLabel sx={{
-                                "& .MuiStepLabel-label": { color: "#ffffff" },
-                                "& .MuiStepIcon-root": { color: "#6c63ff" },
-                            }}>
-                                <Typography sx={{ color: 'white' }}>{label}</Typography>
-                            </StepLabel>
-                        </Step>
-                    ))}
-                </Stepper>
-                {/*<Grid container spacing={4} justifyContent="left">*/}
-                {/*    <BestSupplierCard bestSupplier={bestSupplier} />*/}
-                {/*    <Grid size={{ xs: 12, md: 8 }}>*/}
-                {/*        <RankingTable sortedSuppliers={sortedSuppliers} selectedProduct={selectedProduct} />*/}
-                {/*    </Grid>*/}
-                {/*    <Button*/}
-                {/*        onClick={() => handlePurchase(bestSupplier)}*/}
-                {/*        variant="contained"*/}
-                {/*        sx={{*/}
-                {/*            backgroundColor: "#6c63ff",*/}
-                {/*            color: "white",*/}
-                {/*            textTransform: "none",*/}
-                {/*            fontSize: "1.2rem",*/}
-                {/*            paddingY: 2,*/}
-                {/*            paddingX: 12,*/}
-                {/*            width: "20%",*/}
-                {/*            "&:hover": {*/}
-                {/*                backgroundColor: "#5a54d4",*/}
-                {/*            },*/}
-                {/*        }}*/}
-                {/*    >*/}
-                {/*        Purchase*/}
-                {/*    </Button>*/}
-                {/*</Grid>*/}
-            </Box>
-            {/*{open && (*/}
-            {/*    <SavePurchaseDialog*/}
-            {/*        selectedProduct={selectedProduct}*/}
-            {/*        bestSupplier={bestSupplier}*/}
-            {/*        open={open}*/}
-            {/*        setOpen={setOpen}*/}
-            {/*    />*/}
-            {/*)}*/}
-        </>
+        <Box sx={{ color: "#ffffff", p: 4 }}>
+            <Typography variant="h4" align="left" gutterBottom sx={{ marginBottom: "2rem" }}>
+                Supplier Selection
+            </Typography>
+            <Stepper alternativeLabel activeStep={2} sx={{ mb: 10 }}>
+                {steps.map(label => (
+                    <Step key={label}>
+                        <StepLabel sx={{
+                            "& .MuiStepLabel-label": { color: "#ffffff" },
+                            "& .MuiStepIcon-root": { color: "#6c63ff" },
+                        }}>
+                            <Typography sx={{ color: 'white' }}>{label}</Typography>
+                        </StepLabel>
+                    </Step>
+                ))}
+            </Stepper>
+            <Grid container spacing={4} justifyContent="left">
+                {sortedSuppliers[0] && <BestSupplierCard bestSupplier={sortedSuppliers[0]} />}
+                <Grid size={{ xs: 12, md: 8 }}>
+                    <RankingTable sortedSuppliers={sortedSuppliers} selectedProduct={selectedProduct} />
+                </Grid>
+            </Grid>
+            <Button
+                variant="contained"
+                color="primary"
+                onClick={() => {
+                    setOpen(true);
+                    postPurchaseResults(bestSupplier);
+                }}
+                sx={{
+                    backgroundColor: "#6c63ff",
+                    color: "#ffffff",
+                    "&:hover": {
+                        backgroundColor: "#5a54e0",
+                    },
+                    mt: 4,
+                }}>
+                Save Purchase
+            </Button>
+            {open && sortedSuppliers[0] && (
+                <SavePurchaseDialog
+                    selectedProduct={selectedProduct}
+                    bestSupplier={sortedSuppliers[0]}
+                    open={open}
+                    setOpen={setOpen}
+                />
+            )}
+        </Box>
     );
 };
 
