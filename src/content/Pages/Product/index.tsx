@@ -34,6 +34,14 @@ const ProductPage: FC<ProductPageProps> = ({}) => {
         fetchProducts();
     }, [fetchProducts]);
 
+    const productNames: Record<string, number> = {};
+    const filteredProducts = products.filter((product) => {
+        productNames[product.name] = (productNames[product.name] || 0) + 1;
+        return productNames[product.name] > 1;
+    });
+
+    console.log('filteredProducts', filteredProducts);
+
     if(products === null || products === undefined) {
         return <LoadingWrapper height='100%'/>;
     }
@@ -81,30 +89,18 @@ const ProductPage: FC<ProductPageProps> = ({}) => {
                             <TableRow sx={{ borderBottom: '2px solid #474765' }}>
                                 <TableCell sx={{ color: 'white', fontSize: '1rem' }}>Product Name</TableCell>
                                 <TableCell sx={{ color: 'white', fontSize: '1rem' }}>Description</TableCell>
-                                <TableCell sx={{ color: 'white', fontSize: '1rem' }}>Price</TableCell>
                                 <TableCell sx={{ color: 'white', fontSize: '1rem' }}>Category</TableCell>
-                                <TableCell sx={{ color: 'white', fontSize: '1rem' }}>Delivery Time (weeks)</TableCell>
-                                <TableCell sx={{ color: 'white', fontSize: '1rem' }}>Reliability</TableCell>
-                                <TableCell sx={{ color: 'white', fontSize: '1rem' }}>Safety Compliance</TableCell>
-                                <TableCell sx={{ color: 'white', fontSize: '1rem' }}>Supplier</TableCell>
-                                <TableCell sx={{ color: 'white', fontSize: '1rem' }}>Warranty</TableCell>
                             </TableRow>
                         </TableHead>
-                        {/*<TableBody>*/}
-                        {/*    {products.map((product) => (*/}
-                        {/*        <TableRow key={product.id} sx={{ borderBottom: '2px solid #474765' }}>*/}
-                        {/*            <TableCell sx={{ color: 'white', fontSize: '1rem' }}>{product.name}</TableCell>*/}
-                        {/*            <TableCell sx={{ color: 'white', fontSize: '1rem' }}>{product.description}</TableCell>*/}
-                        {/*            <TableCell sx={{ color: 'white' , fontSize: '1rem'}}>{product.price}</TableCell>*/}
-                        {/*            <TableCell sx={{ color: 'white', fontSize: '1rem' }}>{product.productCategory}</TableCell>*/}
-                        {/*            <TableCell sx={{ color: 'white', fontSize: '1rem'}}>{product.deliveryTimeWeeks}</TableCell>*/}
-                        {/*            <TableCell sx={{ color: 'white', fontSize: '1rem' }}>{product.reliability}</TableCell>*/}
-                        {/*            <TableCell sx={{ color: 'white', fontSize: '1rem'}}>{product.safetyRegulationsCompliance}</TableCell>*/}
-                        {/*            <TableCell sx={{ color: 'white', fontSize: '1rem'}}>{product.supplier.name}</TableCell>*/}
-                        {/*            <TableCell sx={{ color: 'white', fontSize: '1rem' }}>{product.warranty}</TableCell>*/}
-                        {/*        </TableRow>*/}
-                        {/*    ))}*/}
-                        {/*</TableBody>*/}
+                        <TableBody>
+                            {filteredProducts.map((product) => (
+                                <TableRow key={product.id} sx={{ borderBottom: '2px solid #474765' }}>
+                                    <TableCell sx={{ color: 'white', fontSize: '1rem' }}>{product.name}</TableCell>
+                                    <TableCell sx={{ color: 'white', fontSize: '1rem' }}>{product.description}</TableCell>
+                                    <TableCell sx={{ color: 'white', fontSize: '1rem' }}>{product.productCategory}</TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
                     </Table>
                 </TableContainer>
             </Grid>

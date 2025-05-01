@@ -18,14 +18,43 @@ import {getPurchases} from "../../../../api/getPurchases";
 import LoadingWrapper from "../../../../components/LoadingWrapper";
 interface PurchasePageProps {}
 
-const supplierColorMap: Record<string, { backgroundColor: string; color: string }> = {
-    "Supplier X": { backgroundColor: "#4D65BB", color: "black" },
-    "Supplier Y": { backgroundColor: "#8CC56F", color: "black" },
-    "Supplier Z": { backgroundColor: "#F5C158", color: "black" },
+const colorPalette = [
+    "#4D65BB",
+    "#8CC56F",
+    "#F5C158",
+    "#E87A90",
+    "#708090",
+    "#A0522D",
+    "#DDA0DD",
+    "#40E0D0",
+    "#FFA07A",
+    "#9ACD32"
+];
+
+const supplierColorCache: Record<string, { backgroundColor: string; color: string }> = {};
+
+const getStringHash = (str: string): number => {
+    let hash = 0;
+    if (str.length === 0) return hash;
+    for (let i = 0; i < str.length; i++) {
+        const char = str.charCodeAt(i);
+        hash = (hash << 5) - hash + char;
+        hash = hash & hash;
+    }
+    return Math.abs(hash);
 };
 
-const getSupplierStyle = (supplierName: string) => {
-    return supplierColorMap[supplierName] || { backgroundColor: "#CCCCCC", color: "black" }; // Default fallback
+const getSupplierStyle = (supplierId: string) => {
+    if (supplierColorCache[supplierId]) {
+        return supplierColorCache[supplierId];
+    }
+
+    const hash = getStringHash(supplierId);
+    const colorIndex = hash % colorPalette.length;
+    const backgroundColor = colorPalette[colorIndex];
+    const style = { backgroundColor, color: "white" };
+    supplierColorCache[supplierId] = style;
+    return style;
 };
 
 const PurchasePage: FC<PurchasePageProps> = ({}) => {
@@ -104,17 +133,8 @@ const PurchasePage: FC<PurchasePageProps> = ({}) => {
                         </TableHead>
                         <TableBody>
                             {sortedPurchases.reverse().map((purchase) => (
-                                <TableRow key={purchase.id} sx={{ borderBottom: '2px solid #474765' }}>
-                                    <TableCell
-                                    sx={{
-                                        display: "flex",
-                                        alignItems: "center",
-                                        gap: "12px",
-                                        padding: "12px 16px",
-                                        backgroundColor: "#2c2c40",
-                                        borderBottom: "0px solid #474765",
-                                    }}
-                                >
+                                <TableRow key={purchase.id} sx={{ border: '2px solid #474765' }}>
+                                    <TableCell>
                                     <Box
                                         sx={{
                                             minWidth: "80px",
@@ -124,15 +144,11 @@ const PurchasePage: FC<PurchasePageProps> = ({}) => {
                                             fontSize: "0.875rem",
                                             fontWeight: "bold",
                                             textAlign: "center",
-                                            ...getSupplierStyle(purchase.supplier.name),
-                                            margin: 0,
+                                            ...getSupplierStyle(purchase.supplier.id),
                                         }}
                                     >
                                         {purchase.supplier.name}
-                                    </Box>  
-                                    <Typography variant="body2" sx={{ color: "white", margin: 0 }}>
-                                            {purchase.supplier.contactInfo}
-                                    </Typography>
+                                    </Box>
                                     </TableCell>
                                     <TableCell sx={{ color: 'white', fontSize: '1rem' }}>
                                         {new Date(purchase.purchaseDate).toLocaleDateString('tr-TR', {
@@ -145,7 +161,7 @@ const PurchasePage: FC<PurchasePageProps> = ({}) => {
                                         {purchase.supplierScore.toFixed(2)}
                                     </TableCell>
                                     <TableCell sx={{ color: 'white', fontSize: '1rem' }}>
-                                        {purchase.product.name} - {purchase.product.description}
+                                        {purchase.product.name}
                                     </TableCell>
                                     <TableCell sx={{ color: 'white', fontSize: '1rem' }}>
                                         {purchase.user.name} {purchase.user.surname}
