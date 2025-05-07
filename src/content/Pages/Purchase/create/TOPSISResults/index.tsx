@@ -18,7 +18,10 @@ import LoadingWrapper from "../../../../../components/LoadingWrapper";
 import { getSuppliersByProduct } from "../../../../../api/getSupplierByProduct";
 import { Supplier } from "../../../../../model/supplier";
 import { useAuth } from "../../../../../context/AuthContext";
-import { getSupplierProductsByProductId } from "../../../../../api/getSupplierProductByProductId";
+import {
+    getSupplierProductsByProductCategory,
+    getSupplierProductsByProductId
+} from "../../../../../api/getSupplierProductByProductId";
 import { SupplierProduct } from "../../../../../model/supplierProduct";
 
 const TOPSISResults: FC = () => {
@@ -34,6 +37,9 @@ const TOPSISResults: FC = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
+
+    console.log('category', selectedProduct.productCategory);
+
     const fetchSupplierProductByProductId = useCallback(async () => {
         if (!selectedProduct?.id) {
             console.error("Product ID is missing");
@@ -44,7 +50,7 @@ const TOPSISResults: FC = () => {
         setLoading(true);
         setError(null);
         try {
-            const response = await getSupplierProductsByProductId(selectedProduct.id);
+            const response = await getSupplierProductsByProductCategory(selectedProduct.productCategory);
             const processedData = response.map((item:any) => ({
                 id: item.id,
                 name: item.supplier.name,
@@ -62,7 +68,9 @@ const TOPSISResults: FC = () => {
                     reliability: parseFloat(item.reliability),
                 },
             }));
+            console.log('ben', response);
             setSupplierProduct(processedData);
+            console.log('eben', processedData);
         } catch (err: any) {
             console.error('Error fetching supplier products:', err);
             setError("Failed to fetch supplier products.");
@@ -230,6 +238,8 @@ const TOPSISResults: FC = () => {
             </Card>
         );
     }
+
+    console.log('sortedSuppliers', sortedSuppliers)
 
     return (
         <Box sx={{ color: "#ffffff", p: 4 }}>

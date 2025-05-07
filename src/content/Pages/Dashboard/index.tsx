@@ -16,12 +16,12 @@ import SupplierCard from "./components/SupplierCard";
 import SupplierPieChart from "./components/SupplierPieChart";
 import UserPurchaseChart from "./components/UserPurchaseChart";
 import PurchaseLineChart from "./components/PurchaseLineChart";
+import axios from "axios";
 
 interface DashboardPageProps {}
 
 const DashboardPage: FC<DashboardPageProps> = ({}) => {
     const { pathname } = useLocation();
-
     const [purchases, setPurchases] = useState<Purchase[]>([]);
 
     const fetchPurchases = useCallback(async () => {
@@ -32,6 +32,8 @@ const DashboardPage: FC<DashboardPageProps> = ({}) => {
             console.error('Error fetching users:', error);
         }
     }, []);
+
+
 
     useEffect(() => {
         fetchPurchases();

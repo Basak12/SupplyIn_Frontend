@@ -78,6 +78,9 @@ const CreatePurchasePage: FC = () => {
         product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         product.description.toLowerCase().includes(searchQuery.toLowerCase())
     );
+
+
+    console.log('searchedProducts', selectedProduct);
     return (
         <Box
             sx={{
