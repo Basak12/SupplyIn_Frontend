@@ -14,28 +14,25 @@ const BestSupplierCard: FC<BestSupplierCardProps> = ({bestSupplier}) => {
     }
 
     return (
-            <Grid size={{xs:12, md:4}}>
-                <Card
-                    sx={{
-                        backgroundColor: "#2c2c40",
-                        padding: 4,
-                        borderRadius: 3,
-                        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.3)",
-                        textAlign: "center",
-                    }}
-                >
-                    <Typography variant="h6" color="#f5f5f5">
-                        Best Score
-                    </Typography>
-                    <Typography variant="h4" color="#6c63ff" sx={{ mt: 2 }}>
-                        {bestSupplier.name}
-                    </Typography>
-                    <Typography variant="body1" color="#b0b0b0" sx={{ mt: 1 }}>
-                        {bestSupplier.score.toFixed(1)}
-                    </Typography>
-
-                </Card>
-            </Grid>
+        <Card
+            sx={{
+                backgroundColor: "#2c2c40",
+                padding: 4,
+                borderRadius: 3,
+                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.3)",
+                textAlign: "center",
+            }}
+        >
+            <Typography variant="h6" color="#f5f5f5">
+                Best Score
+            </Typography>
+            <Typography variant="h4" color="#6c63ff" sx={{ mt: 2 }}>
+                {bestSupplier.name}
+            </Typography>
+            <Typography variant="body1" color="#b0b0b0" sx={{ mt: 1 }}>
+                {bestSupplier.score.toFixed(1)}
+            </Typography>
+        </Card>
     );
 };
 

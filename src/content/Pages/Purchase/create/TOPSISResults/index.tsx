@@ -259,28 +259,33 @@ const TOPSISResults: FC = () => {
                 ))}
             </Stepper>
             <Grid container spacing={4} justifyContent="left">
-                {sortedSuppliers[0] && <BestSupplierCard bestSupplier={sortedSuppliers[0]} />}
+               <Grid size={{ xs: 6, md: 4 }}>
+                   <Box display='flex' flexDirection='column' justifyContent='center'>
+                       {sortedSuppliers[0] && <BestSupplierCard bestSupplier={sortedSuppliers[0]} />}
+                       <Button
+                           variant="contained"
+                           color="primary"
+                           onClick={() => {
+                               setOpen(true);
+                               postPurchaseResults(bestSupplier);
+                           }}
+                           sx={{
+                               backgroundColor: "#6c63ff",
+                               color: "#ffffff",
+                               "&:hover": {
+                                   backgroundColor: "#5a54e0",
+                               },
+                               mt: 4,
+                           }}>
+                           Save Purchase
+                       </Button>
+                   </Box>
+               </Grid>
+
                 <Grid size={{ xs: 12, md: 8 }}>
                     <RankingTable sortedSuppliers={sortedSuppliers} selectedProduct={selectedProduct} />
                 </Grid>
             </Grid>
-            <Button
-                variant="contained"
-                color="primary"
-                onClick={() => {
-                    setOpen(true);
-                    postPurchaseResults(bestSupplier);
-                }}
-                sx={{
-                    backgroundColor: "#6c63ff",
-                    color: "#ffffff",
-                    "&:hover": {
-                        backgroundColor: "#5a54e0",
-                    },
-                    mt: 4,
-                }}>
-                Save Purchase
-            </Button>
             {open && sortedSuppliers[0] && (
                 <SavePurchaseDialog
                     selectedProduct={selectedProduct}

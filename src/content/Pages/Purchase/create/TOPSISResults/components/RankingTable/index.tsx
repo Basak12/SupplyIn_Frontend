@@ -17,6 +17,10 @@ import Grid from "@mui/material/Grid2";
 type SupplierScore = {
     name: string;
     score: number;
+    price: number;
+    deliveryTime: number;
+    warranty: number;
+    reliability: number;
 };
 
 interface RankingTableProps {
@@ -37,6 +41,7 @@ const RankingTable: FC<RankingTableProps> = ({sortedSuppliers, selectedProduct})
             color: '#ffffff'
         }}>Loading</Typography>;
     }
+    console.log('sortedSuppliers', sortedSuppliers);
 
     return (
         <Card
@@ -55,24 +60,25 @@ const RankingTable: FC<RankingTableProps> = ({sortedSuppliers, selectedProduct})
                     <TableHead>
                         <TableRow>
                             <TableCell sx={{ color: "white" }}>Supplier</TableCell>
-                            <TableCell sx={{ color: "white" }} align="center">
-                                Ranking
-                            </TableCell>
-                            <TableCell sx={{ color: "white" }} align="center">
-                                Value
-                            </TableCell>
+                            <TableCell sx={{ color: "white" }} align="center">Ranking</TableCell>
+                            <TableCell sx={{ color: "white" }} align="center">Score</TableCell>
+                            <TableCell sx={{ color: "white" }} align="center">Price</TableCell>
+                            <TableCell sx={{ color: "white" }} align="center">Delivery Time</TableCell>
+                            <TableCell sx={{ color: "white" }} align="center">Warranty</TableCell>
+                            <TableCell sx={{ color: "white" }} align="center">Reliability</TableCell>
+
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {sortedSuppliers.map((supplier, index) => (
                             <TableRow key={supplier.name}>
                                 <TableCell sx={{ color: "white" }}>{supplier.name}</TableCell>
-                                <TableCell sx={{ color: "white" }} align="center">
-                                    {index + 1}
-                                </TableCell>
-                                <TableCell sx={{ color: "white" }} align="center">
-                                    {supplier.score.toFixed(1)}
-                                </TableCell>
+                                <TableCell sx={{ color: "white" }} align="center">{index + 1}</TableCell>
+                                <TableCell sx={{ color: "white" }} align="center">{supplier.score.toFixed(1)}</TableCell>
+                                <TableCell sx={{ color: "white" }} align="center">{supplier.price}</TableCell>
+                                <TableCell sx={{ color: "white" }} align="center">{supplier.deliveryTime} Week(s)</TableCell>
+                                <TableCell sx={{ color: "white" }} align="center">{supplier.warranty} Years(s)</TableCell>
+                                <TableCell sx={{ color: "white" }} align="center">{supplier.reliability}/5</TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
