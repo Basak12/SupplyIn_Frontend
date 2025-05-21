@@ -3,6 +3,8 @@ import profileSidebarItems from "./profileSidebarItems";
 import productSidebarItems from "./productSidebarItems";
 import supplierSidebarItems from "./supplierSidebarItems";
 import purchaseSidebarItems from "./purchaseSidebarItems";
+import aiChatSidebarItems from "./aiChatSidebarItems";
+
 import React from "react";
 
 type SidebarItem = {
@@ -14,6 +16,7 @@ type SidebarItem = {
 
 const sidebarItems: { [key: string]: SidebarItem[] } = {
     dashboard: dashboardSidebarItems,
+    aiChat: aiChatSidebarItems,
     purchase: purchaseSidebarItems,
     products: productSidebarItems,
     supplier: supplierSidebarItems,

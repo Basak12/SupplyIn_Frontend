@@ -27,9 +27,10 @@ const AdjustImportancePage: FC = () => {
 
     const [comparisons, setComparisons] = useState({
         price: { deliveryTime: '1', warranty: '1', reliability: '1', safety: '1' },
-        deliveryTime: { warranty: '1', reliability: '1', safety: '1' },
-        warranty: { reliability: '1', safety: '1' },
-        reliability: { safety: '1' },
+        deliveryTime: { warranty: '1', reliability: '1', safety: '1', price: '1' },
+        warranty: { reliability: '1', safety: '1', price: '1', deliveryTime: '1' },
+        reliability: { safety: '1', price: '1', deliveryTime: '1', warranty: '1' },
+        safety: { price: '1', deliveryTime: '1', warranty: '1', reliability: '1'}
     });
 
     const categoryDisplayNames: Record<string, string> = {
@@ -55,21 +56,33 @@ const AdjustImportancePage: FC = () => {
     };
 
     const generateMatrixFromComparisons = () => {
-        const criteria = ["price", "deliveryTime", "warranty", "reliability", "safety"];
+        const criteria = ["price", "deliveryTime", "warranty", "reliability", "safety"] as const;
+        type Criterion = typeof criteria[number];
+
         const matrixSize = criteria.length;
         const matrix: number[][] = Array.from({ length: matrixSize }, () =>
             Array(matrixSize).fill(1)
         );
-        criteria.forEach((criterion, i) => {
-            Object.entries(comparisons[criterion as keyof typeof comparisons] || {}).forEach(([key, value]) => {
-                const j = criteria.indexOf(key);
-                if (value) {
-                    const numericValue = parseFloat(value);
-                    matrix[i][j] = numericValue;
-                    matrix[j][i] = 1 / numericValue;
+
+        for (let i = 0; i < matrixSize; i++) {
+            for (let j = i + 1; j < matrixSize; j++) {
+                const critA = criteria[i];
+                const critB = criteria[j];
+
+                const valA = (comparisons[critA] as Record<string, string>)[critB];
+                const valB = (comparisons[critB] as Record<string, string>)[critA];
+
+                let value = 1;
+                if (valA) {
+                    value = parseFloat(valA);
+                } else if (valB) {
+                    value = 1 / parseFloat(valB);
                 }
-            });
-        });
+
+                matrix[i][j] = value;
+                matrix[j][i] = 1 / value;
+            }
+        }
         setComparisonMatrix(matrix);
     };
 
@@ -101,6 +114,9 @@ const AdjustImportancePage: FC = () => {
         }
     ]
 
+
+    console.log('comparisons', comparisons);
+
     return (
         <>
         <Box
@@ -112,7 +128,7 @@ const AdjustImportancePage: FC = () => {
             <Typography variant="h4" align="left" gutterBottom sx={{marginBottom: "2rem"}}>
                 Supplier Selection
             </Typography>
-            <Stepper alternativeLabel activeStep={1} sx={{ mb: 10 }}>
+            <Stepper alternativeLabel activeStep={1} sx={{ mb: 8 }}>
                 {steps.map((label) => (
                     <Step key={label} sx={{
                         color:'white'
@@ -133,16 +149,16 @@ const AdjustImportancePage: FC = () => {
             <Typography variant="h5" gutterBottom>
                 Pairwise Comparison for {selectedProduct?.name}
             </Typography>
-            <Grid container spacing={3}>
+            <Grid container spacing={2} display='flex'>
                 {Object.entries(comparisons).map(([category, values], index) => (
-                    <Grid size={{xs:12, md:6,}} key={index}>
+                    <Grid size={{xs:12, md:6, lg:4}} key={index}>
                         <Card
                             sx={{
                                 backgroundColor: '#2c2c40',
                                 borderRadius: 3,
                                 p: 3,
                                 color: '#ffffff',
-                                width: '70%',
+                                width: '85%',
                             }}
                         >
                             <Typography variant="h6" sx={{ mb: 2, color: '#ff8800' }}>
@@ -193,7 +209,7 @@ const AdjustImportancePage: FC = () => {
                     </Grid>
                 ))}
             </Grid>
-            <Box display="flex" justifyContent="flex-end">
+            <Box display="flex" justifyContent="flex-end" mt={-9} mr={3}>
                 <Button
                     onClick={handleCalculateWeight}
                     endIcon={<ChevronRight />}

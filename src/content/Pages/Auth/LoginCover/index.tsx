@@ -10,8 +10,8 @@ import LoadingWrapper from "../../../../components/LoadingWrapper";
 const LoginPage: FC = () => {
     const navigate = useNavigate();
     const { login } = useAuth();
-    const [email, setEmail] = useState('john.doe@example.com');
-    const [password, setPassword] = useState('123456');
+    const [email, setEmail] = useState<string>('');
+    const [password, setPassword] = useState<string>('');
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const handleLogin = async () => {

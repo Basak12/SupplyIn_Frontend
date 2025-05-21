@@ -77,7 +77,7 @@ const RankingTable: FC<RankingTableProps> = ({sortedSuppliers, selectedProduct})
                                 <TableCell sx={{ color: "white" }} align="center">{supplier.score.toFixed(1)}</TableCell>
                                 <TableCell sx={{ color: "white" }} align="center">{supplier.price}</TableCell>
                                 <TableCell sx={{ color: "white" }} align="center">{supplier.deliveryTime} Week(s)</TableCell>
-                                <TableCell sx={{ color: "white" }} align="center">{supplier.warranty} Years(s)</TableCell>
+                                <TableCell sx={{ color: "white" }} align="center">{supplier.warranty} Year(s)</TableCell>
                                 <TableCell sx={{ color: "white" }} align="center">{supplier.reliability}/5</TableCell>
                             </TableRow>
                         ))}

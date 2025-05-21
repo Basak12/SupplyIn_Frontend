@@ -61,13 +61,10 @@ const DashboardPage: FC<DashboardPageProps> = ({}) => {
                     borderWidth: 1,
                     borderRadius: 2
                 }}>
-                    <Box m={2} sx={{
-
-                    }}>
+                    <Box m={2}>
                         <Typography variant='h5' color='white' sx={{
                             ml:1
                         }}>Dashboard</Typography>
-
                     </Box>
                 </Grid>
                 <Grid size={12}

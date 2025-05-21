@@ -125,37 +125,17 @@ const PurchasePage: FC<PurchasePageProps> = ({}) => {
                         <TableHead>
                             <TableRow sx={{ borderBottom: '2px solid #474765' }}>
                                 <TableCell sx={{ color: 'white', fontSize: '1rem' }}>Supplier</TableCell>
-                                <TableCell sx={{ color: 'white', fontSize: '1rem' }}>Purchase Date</TableCell>
                                 <TableCell sx={{ color: 'white', fontSize: '1rem' }}>Supplier Score</TableCell>
                                 <TableCell sx={{ color: 'white', fontSize: '1rem' }}>Product</TableCell>
                                 <TableCell sx={{ color: 'white', fontSize: '1rem' }}>User</TableCell>
+                                <TableCell sx={{ color: 'white', fontSize: '1rem' }}>Purchase Date</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {sortedPurchases.reverse().map((purchase) => (
                                 <TableRow key={purchase.id} sx={{ border: '2px solid #474765' }}>
-                                    <TableCell>
-                                    <Box
-                                        sx={{
-                                            minWidth: "80px",
-                                            px: 2,
-                                            py: 1,
-                                            borderRadius: "12px",
-                                            fontSize: "0.875rem",
-                                            fontWeight: "bold",
-                                            textAlign: "center",
-                                            ...getSupplierStyle(purchase.supplier.id),
-                                        }}
-                                    >
-                                        {purchase.supplier.name}
-                                    </Box>
-                                    </TableCell>
                                     <TableCell sx={{ color: 'white', fontSize: '1rem' }}>
-                                        {new Date(purchase.purchaseDate).toLocaleDateString('tr-TR', {
-                                            day: '2-digit',
-                                            month: '2-digit',
-                                            year: 'numeric',
-                                        })}
+                                        {purchase.supplier.name}
                                     </TableCell>
                                     <TableCell sx={{ color: 'white', fontSize: '1rem' }}>
                                         {purchase.supplierScore.toFixed(2)}
@@ -165,6 +145,13 @@ const PurchasePage: FC<PurchasePageProps> = ({}) => {
                                     </TableCell>
                                     <TableCell sx={{ color: 'white', fontSize: '1rem' }}>
                                         {purchase.user.name} {purchase.user.surname}
+                                    </TableCell>
+                                    <TableCell sx={{ color: 'white', fontSize: '1rem' }}>
+                                        {new Date(purchase.purchaseDate).toLocaleDateString('tr-TR', {
+                                            day: '2-digit',
+                                            month: '2-digit',
+                                            year: 'numeric',
+                                        })}
                                     </TableCell>
                                 </TableRow>
                             ))}

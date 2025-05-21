@@ -79,8 +79,6 @@ const CreatePurchasePage: FC = () => {
         product.description.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-
-    console.log('searchedProducts', selectedProduct);
     return (
         <Box
             sx={{
@@ -172,21 +170,25 @@ const CreatePurchasePage: FC = () => {
                 ))}
             </Grid>
             {searchedProducts.length === 0 && (
-                <Card sx={{
-                    backgroundColor: '#2c2c40',
-                    borderRadius: 3,
-                    color: '#ffffff',
-                    height: 150,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                }}>
-                    <Typography variant="h6" align="center">
-                        No products found
-                    </Typography>
-                </Card>
-            )}
+                <Box sx={{display:'flex', justifyContent:'center', width:'100%' }}>
+                    <Card sx={{
+                        backgroundColor: '#2c2c40',
+                        borderRadius: 3,
+                        color: '#ffffff',
+                        height: 100,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        width: '40%',
+                    }}>
+                        <Typography variant="h6" align="center">
+                            No products found
+                        </Typography>
+                    </Card>
+
+                </Box>
+                )}
             {selectedProduct && (
                 <Box display="flex" justifyContent="center" mt={4}>
                     <Button

@@ -34,13 +34,11 @@ const ProductPage: FC<ProductPageProps> = ({}) => {
         fetchProducts();
     }, [fetchProducts]);
 
-    const productNames: Record<string, number> = {};
-    const filteredProducts = products.filter((product) => {
-        productNames[product.name] = (productNames[product.name] || 0) + 1;
-        return productNames[product.name] > 1;
-    });
+    const filteredProducts = products.filter(
+        (product, index, self) =>
+            self.findIndex(p => p.name === product.name) === index
+    );
 
-    console.log('filteredProducts', filteredProducts);
 
     if(products === null || products === undefined) {
         return <LoadingWrapper height='100%'/>;
